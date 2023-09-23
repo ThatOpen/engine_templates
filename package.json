@@ -1,0 +1,19 @@
+{
+  "name": "openbim-vite",
+  "version": "1.0.0",
+  "main": "index.js",
+  "bin": {
+    "create-openbim-app": "./index.js"
+  },
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "inquirer": "^9.2.11",
+    "ncp": "^2.0.0"
+  }
+}
