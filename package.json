@@ -1,5 +1,5 @@
 {
-  "name": "create-openbim-app",
+  "name": "openbim-app-templates",
   "description": "Quickly start your next OpenBIM App.",
   "version": "1.0.0",
   "main": "index.js",
