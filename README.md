@@ -4,7 +4,7 @@ This repository is a CLI command that allow to quickly start your next BIM appli
 ## Getting Started
 Starting is really easy, just follow these steps:
 
-* Install it globally with `npm -g create-openbim-app`
+* Install it globally with `npm i -g create-openbim-app`.
 * Create a folder anywhere you want and open it within your IDE.
 * In the terminal of the opened folder, run `create-openbim-app` and follow the prompts.
 * Run `npm i` and then `npm run dev`
