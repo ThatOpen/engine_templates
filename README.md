@@ -1,5 +1,5 @@
 # create-openbim-app
-This repository is a CLI command that allow to kick start your next BIM application using [OpenBIM Components](https://github.com/IFCjs/components) and [Vite](https://vitejs.dev/).
+This repository is a CLI command that allow to quickly start your next BIM application using [OpenBIM Components](https://github.com/IFCjs/components) and [Vite](https://vitejs.dev/).
 
 ## Getting Started
 Starting is really easy, just follow these steps:

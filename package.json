@@ -1,5 +1,6 @@
 {
   "name": "create-openbim-app",
+  "description": "Quickly start your next OpenBIM App.",
   "version": "1.0.0",
   "main": "index.js",
   "bin": {
