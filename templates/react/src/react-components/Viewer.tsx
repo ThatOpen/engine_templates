@@ -9,17 +9,13 @@ export default () => {
     const viewer = new OBC.Components()
 
     const sceneComponent = new OBC.SimpleScene(viewer)
+    sceneComponent.setup()
     viewer.scene = sceneComponent
-    const scene = sceneComponent.get()
-    const ambientLight = new THREE.AmbientLight(0xE6E7E4, 1)
-    const directionalLight = new THREE.DirectionalLight(0xF9F9F9, 0.75)
-    directionalLight.position.set(10, 50, 10)
-    scene.add(ambientLight, directionalLight)
-    scene.background = new THREE.Color("#202932")
 
     const viewerContainer = document.getElementById("viewerContainer") as HTMLDivElement
     const rendererComponent = new OBC.PostproductionRenderer(viewer, viewerContainer)
     viewer.renderer = rendererComponent
+    const postproduction = rendererComponent.postproduction
 
     const cameraComponent = new OBC.OrthoPerspectiveCamera(viewer)
     viewer.camera = cameraComponent
@@ -29,9 +25,10 @@ export default () => {
 
     viewer.init()
     cameraComponent.updateAspect()
-    rendererComponent.postproduction.enabled = true
+    postproduction.enabled = true
 
-    new OBC.SimpleGrid(viewer, new THREE.Color(0x666666))
+    const grid = new OBC.SimpleGrid(viewer, new THREE.Color(0x666666))
+    postproduction.customEffects.excludedMeshes.push(grid.get())
 
     const fragmentManager = new OBC.FragmentManager(viewer)
     const ifcLoader = new OBC.FragmentIfcLoader(viewer)
