@@ -1,10 +1,8 @@
 import ReactDOM from 'react-dom/client'
-import Viewer from './react-components/Viewer.tsx'
-import Sidebar from './react-components/Sidebar.tsx'
+import Viewer from './viewer.tsx'
 
 ReactDOM.createRoot(document.getElementById('app')!).render(
-  <>
-    <Sidebar />
-    <Viewer />
-  </>
+	<>
+		<Viewer />
+	</>
 )

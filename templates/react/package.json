@@ -9,10 +9,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "openbim-components": "1.1.1",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.14.18",
+    "@mui/material": "^5.14.18",
+    "bim-fragment": "1.0.25",
+    "openbim-components": "1.1.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "three": "0.152.2"
+    "three": "0.152.2",
+    "web-ifc": "^0.0.46"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
