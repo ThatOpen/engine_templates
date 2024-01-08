@@ -57,9 +57,9 @@ export class Initializer {
         navCube.setPosition("bottom-left");
         navCube.offset = 0.5;
 
-        const fragments = new OBC.FragmentManager(components);
+        const fragments = components.tools.get(OBC.FragmentManager);
 
-        const fragmentIfcLoader = new OBC.FragmentIfcLoader(components);
+        const fragmentIfcLoader = components.tools.get(OBC.FragmentIfcLoader);
 
         fragmentIfcLoader.settings.wasm = {
             path: "https://unpkg.com/web-ifc@0.0.46/",
@@ -82,7 +82,9 @@ export class Initializer {
         // };
 
         //@ts-ignore
-        const culler = new OBC.ScreenCuller(components);
+        const culler = components.tools.get(OBC.ScreenCuller);
+        culler.setup();
+        
         const hider = new OBC.FragmentHider(components);
         mainToolbar.addChild(hider.uiElement.get("main"));
 
@@ -118,7 +120,6 @@ export class Initializer {
             path: "https://unpkg.com/web-ifc@0.0.46/",
             absolute: true
         }
-        await propsManager.init();
         propsProcessor.propertiesManager = propsManager;
 
         propsManager.onRequestFile.add(async () => {
@@ -145,6 +146,10 @@ export class Initializer {
 
         await styler.setup();
         mainToolbar.addChild(styler.uiElement.get("mainButton"));
+
+        window.addEventListener("keydown", () => {
+            culler.needsUpdate = true
+        })
 
         renderer.get().domElement.addEventListener("wheel", cullerUpdater.update);
         camera.controls.addEventListener("controlstart", cullerUpdater.cancel);

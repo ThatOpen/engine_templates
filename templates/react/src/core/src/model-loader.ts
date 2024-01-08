@@ -161,6 +161,7 @@ export class ModelLoader {
 
 		for (const fragment of model.items) {
 			culler.add(fragment.mesh);
+			fragment.mesh.visible = true;
 		}
 
 		classifier.byStorey(model);
