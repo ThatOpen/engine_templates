@@ -2,7 +2,6 @@ import * as OBC from "openbim-components"
 import * as THREE from "three"
 
 const viewer = new OBC.Components()
-viewer.onInitialized.add(() => {})
 
 const sceneComponent = new OBC.SimpleScene(viewer)
 sceneComponent.setup()
@@ -19,16 +18,21 @@ viewer.camera = cameraComponent
 const raycasterComponent = new OBC.SimpleRaycaster(viewer)
 viewer.raycaster = raycasterComponent
 
-viewer.init()
+await viewer.init()
 postproduction.enabled = true
 
 const grid = new OBC.SimpleGrid(viewer, new THREE.Color(0x666666))
 postproduction.customEffects.excludedMeshes.push(grid.get())
 
 const ifcLoader = new OBC.FragmentIfcLoader(viewer)
+await ifcLoader.setup()
 
 const highlighter = new OBC.FragmentHighlighter(viewer)
-highlighter.setup()
+await highlighter.setup()
+
+const culler = new OBC.ScreenCuller(viewer)
+await culler.setup()
+cameraComponent.controls.addEventListener("sleep", () => culler.needsUpdate = true)
 
 const propertiesProcessor = new OBC.IfcPropertiesProcessor(viewer)
 highlighter.events.select.onClear.add(() => {
@@ -36,6 +40,7 @@ highlighter.events.select.onClear.add(() => {
 })
 
 ifcLoader.onIfcLoaded.add(async model => {
+  for (const fragment of model.items) { culler.add(fragment.mesh) }
   propertiesProcessor.process(model)
   highlighter.events.select.onHighlight.add((selection) => {
     const fragmentID = Object.keys(selection)[0]
@@ -43,6 +48,7 @@ ifcLoader.onIfcLoaded.add(async model => {
     propertiesProcessor.renderProperties(model, expressID)
   })
   highlighter.update()
+  culler.needsUpdate = true
 })
 
 const mainToolbar = new OBC.Toolbar(viewer)
