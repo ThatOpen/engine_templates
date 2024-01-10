@@ -33,8 +33,9 @@ Starting is really easy, just follow these steps:
 ## Templates
 Currently, there are two templates available:
 
-* Vanilla
 * React
+* Vanilla
+* Vue
 
 Templates are using TypeScript as OpenBIM Components is written with it, so you can get typing help when developing your app. Keep in mind the templates are not full apps as they lack many of the functionalities from the library, but you can take them as a nice starting point to not going from the scratch.
 
