@@ -1,5 +1,6 @@
 import * as OBC from "openbim-components"
 import * as THREE from "three"
+import { ExampleTool } from "./bim-components"
 
 const viewer = new OBC.Components()
 
@@ -51,9 +52,17 @@ ifcLoader.onIfcLoaded.add(async model => {
   culler.needsUpdate = true
 })
 
+const exampleTool = new ExampleTool(viewer)
+await exampleTool.setup({
+  message: "Hi there from ExampleTool!",
+  requiredSetting: 123
+})
+
 const mainToolbar = new OBC.Toolbar(viewer)
 mainToolbar.addChild(
   ifcLoader.uiElement.get("main"),
-  propertiesProcessor.uiElement.get("main")
+  propertiesProcessor.uiElement.get("main"),
+  exampleTool.uiElement.get("activationBtn")
 )
+
 viewer.ui.addToolbar(mainToolbar)
