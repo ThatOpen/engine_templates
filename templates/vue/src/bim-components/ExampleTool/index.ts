@@ -8,6 +8,7 @@ export interface ExampleToolConfig {
 export class ExampleTool extends OBC.Component<null> implements OBC.UI, OBC.Disposable, OBC.Configurable<ExampleToolConfig> {
   static uuid = "e425ff6a-eb8a-4866-a9c9-daee87d38d6d"
   enabled = false
+  isSetup = false
   uiElement = new OBC.UIElement<{
     activationBtn: OBC.Button
   }>()
@@ -42,6 +43,7 @@ export class ExampleTool extends OBC.Component<null> implements OBC.UI, OBC.Disp
       throw new Error("You need to set 'Required Setting' in order for ExampleTool to work!")
     }
     this.enabled = true
+    this.isSetup = true
     await this.onSetup.trigger()
   }
 

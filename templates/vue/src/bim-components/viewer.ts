@@ -47,7 +47,7 @@ export const viewer: ViewerSetup = async (viewer: OBC.Components, container: HTM
       const expressID = Number([...selection[fragmentID]][0])
       propertiesProcessor.renderProperties(model, expressID)
     })
-    highlighter.update()
+    highlighter.updateHighlight()
     culler.needsUpdate = true
   })
 
