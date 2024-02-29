@@ -33,7 +33,7 @@ await highlighter.setup()
 
 const culler = new OBC.ScreenCuller(viewer)
 await culler.setup()
-cameraComponent.controls.addEventListener("sleep", () => culler.needsUpdate = true)
+cameraComponent.controls.addEventListener("sleep", () => culler.elements.needsUpdate = true)
 
 const propertiesProcessor = new OBC.IfcPropertiesProcessor(viewer)
 highlighter.events.select.onClear.add(() => {
@@ -41,15 +41,15 @@ highlighter.events.select.onClear.add(() => {
 })
 
 ifcLoader.onIfcLoaded.add(async model => {
-  for (const fragment of model.items) { culler.add(fragment.mesh) }
+  for (const fragment of model.items) { culler.elements.add(fragment.mesh) }
   propertiesProcessor.process(model)
   highlighter.events.select.onHighlight.add((selection) => {
     const fragmentID = Object.keys(selection)[0]
     const expressID = Number([...selection[fragmentID]][0])
     propertiesProcessor.renderProperties(model, expressID)
   })
-  highlighter.update()
-  culler.needsUpdate = true
+  highlighter.updateHighlight()
+  culler.elements.needsUpdate = true
 })
 
 const exampleTool = new ExampleTool(viewer)

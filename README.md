@@ -3,7 +3,7 @@
   |
   <a href="https://docs.thatopen.com/intro">documentation</a>
   |
-  <a href="https://platform.thatopen.com/app">demo</a>
+  <a href="https://thatopen.github.io/engine_components/src/fragments/FragmentIfcLoader/index.html">demo</a>
   |
   <a href="https://people.thatopen.com/">community</a>
   |
@@ -12,11 +12,11 @@
 
 ![cover](cover.png)
 
-<h1>Open BIM app templates <img src="https://ifcjs.github.io/components/resources/favicon.ico" width="32"></h1>
+<h1>Open BIM app templates <img src="https://ThatOpen.github.io/engine_components/resources/favicon.ico" width="32"/></h1>
 
 [![NPM Package][npm]][npm-url]
 [![NPM Package][npm-downloads]][npm-url]
-[![Tests](https://github.com/IFCjs/components/actions/workflows/tests.yml/badge.svg)](https://github.com/IFCjs/components/actions/workflows/tests.yaml)
+[![Tests](https://github.com/ThatOpen/engine_components/actions/workflows/tests.yml/badge.svg)](https://github.com/IFCjs/components/actions/workflows/tests.yaml)
 
 This repository is a CLI command that allow to quickly start your next BIM application using [OpenBIM Components](https://github.com/IFCjs/components) and [Vite](https://vitejs.dev/).
 
