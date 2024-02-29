@@ -63,9 +63,7 @@ export class ModelLoader {
 		}
 		this._blurScreen.visible = false;
 		const scene = this._components.scene.get();
-		const cacher = await this._components.tools.get(OBC.FragmentCacher);
 		const highlighter = await this._components.tools.get(OBC.FragmentHighlighter);
-		const fragments = await this._components.tools.get(OBC.FragmentManager);
 
 		// TODO: Why is this necessary? Investigate why the highlighter is reset
 		if(!Object.keys(highlighter.highlightMats).length) {
@@ -89,45 +87,12 @@ export class ModelLoader {
 
 			// If file is cached, just load the fragment
 
-			const fileURL = URL.createObjectURL(file);
-
-			const fileID = JSON.stringify({ name, size });
-			const isCached = cacher.existsFragmentGroup(fileID);
-			if (isCached) {
-				const model = await cacher.getFragmentGroup(fileID);
-				if (model) {
-					// TODO: Do this in fragmentManager automatically?
-					const isFirstModel = fragments.groups.length === 1;
-					if (isFirstModel) {
-						fragments.baseCoordinationModel = model.uuid;
-					} else {
-						fragments.coordinate([model]);
-					}
-					// Save the IFC for later export
-					await cacher.delete([model.uuid]);
-					await cacher.save(model.uuid, fileURL);
-					await this.setupLoadedModel(model);
-				}
-				continue;
-			}
-
-			// Otherwise load the IFC and cache it
-
-
 			const rawBuffer = await file.arrayBuffer();
 			const buffer = new Uint8Array(rawBuffer);
 			const loader = await this._components.tools.get(OBC.FragmentIfcLoader);
-			const model = await loader.load(buffer, file.name);
-
-			// Save the IFC for later export
-			await cacher.delete([model.uuid]);
-			await cacher.save(model.uuid, fileURL);
+			const model = await loader.load(buffer);
 
 			await this.setupLoadedModel(model);
-
-			if (!isCached) {
-				await cacher.saveFragmentGroup(model, fileID);
-			}
 
 			scene.add(model);
 		}
@@ -156,7 +121,10 @@ export class ModelLoader {
 		const styler = await tools.get(OBC.FragmentClipStyler);
 		const plans = await tools.get(OBC.FragmentPlans);
 		const materialManager = await tools.get(OBC.MaterialManager);
-		const modelTree = await tools.get(OBC.FragmentTree);
+
+		// Todo: improve this in future version
+		// @ts-ignore
+		const modelTree = window.modelTree;
 		const hider = await tools.get(OBC.FragmentHider);
 
 		for (const fragment of model.items) {
@@ -170,7 +138,7 @@ export class ModelLoader {
 		await cullerUpdater.update();
 
 		propsProcessor.process(model);
-		await highlighter.update();
+		await highlighter.updateHighlight();
 
 		const gridMesh = grid.get();
 		const bottom = model.boundingBox.min.y;

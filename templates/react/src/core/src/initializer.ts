@@ -61,10 +61,7 @@ export class Initializer {
 
         const fragmentIfcLoader = components.tools.get(OBC.FragmentIfcLoader);
 
-        fragmentIfcLoader.settings.wasm = {
-            path: "https://unpkg.com/web-ifc@0.0.46/",
-            absolute: true,
-        };
+        await fragmentIfcLoader.setup();
 
         mainToolbar.addChild(fragmentIfcLoader.uiElement.get("main"));
 
@@ -107,28 +104,21 @@ export class Initializer {
 
         const modelTree = new OBC.FragmentTree(components);
         await modelTree.init();
+        // Todo: improve this in future version
+        // @ts-ignore
+        window.modelTree = modelTree;
 
         mainToolbar.addChild(modelTree.uiElement.get("main"));
 
         const propsProcessor = new OBC.IfcPropertiesProcessor(components);
         mainToolbar.addChild(propsProcessor.uiElement.get("main"));
 
-        const cacher = new OBC.FragmentCacher(components);
-
         const propsManager = new OBC.IfcPropertiesManager(components);
         propsManager.wasm = {
-            path: "https://unpkg.com/web-ifc@0.0.46/",
+            path: "https://unpkg.com/web-ifc@0.0.51/",
             absolute: true
         }
         propsProcessor.propertiesManager = propsManager;
-
-        propsManager.onRequestFile.add(async () => {
-            propsManager.ifcToExport = null;
-            if(!propsManager.selectedModel) return;
-            const file = await cacher.get(propsManager.selectedModel.uuid);
-            if(!file) return;
-            propsManager.ifcToExport = await file.arrayBuffer();
-        })
 
         const highlighter = await components.tools.get(OBC.FragmentHighlighter);
         await highlighter.setup();
@@ -163,19 +153,10 @@ export class Initializer {
 
         highlighter.events.select.onHighlight.add((selection) => {
             const fragmentID = Object.keys(selection)[0];
-            const firstID = Array.from(selection[fragmentID])[0];
-            const expressID = Number(firstID);
-            let model;
-            for (const group of fragments.groups) {
-                const fragmentFound = Object.values(group.keyFragments).find(
-                  (id) => id === fragmentID
-                );
-                if (fragmentFound) {
-                    model = group;
-                }
-            }
-            if (model) {
-                propsProcessor.renderProperties(model, expressID);
+            const fragment = fragments.list[fragmentID];
+            if (fragment && fragment.group) {
+                const id = Array.from(fragment.ids)[0];
+                propsProcessor.renderProperties(fragment.group, id);
             }
         });
 

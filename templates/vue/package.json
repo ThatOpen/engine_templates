@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "bim-fragment": "1.4.1",
-    "openbim-components": "1.4.7",
+    "openbim-components": "1.4.10",
     "three": "0.160.1",
     "vue": "^3.3.11",
     "vue-ifc-viewer": "1.0.2",
