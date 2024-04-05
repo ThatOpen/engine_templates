@@ -12,7 +12,6 @@ This template should help get you started developing with Tauri and engine-compo
 Starting is really easy, just follow these steps:
 
 * Run `npm i` and then `npm run tauri dev` or `npm run tauri build`
-* Go to the localhost provided by Vite and enjoy.
 
 ### Recommended IDE Setup
 
