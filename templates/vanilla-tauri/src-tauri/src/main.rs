@@ -3,9 +3,10 @@
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
+fn greet(message: &str) -> String {
+    format!("Tauri message: {}", message)
 }
+
 
 fn main() {
     tauri::Builder::default()

@@ -46,19 +46,18 @@ highlighter.events.select.onClear.add(() => {
   propertiesProcessor.cleanPropertiesList();
 });
 
-ifcLoader.onIfcLoaded.add(async (model) => {
-  console.log(model);
-  // for (const fragment of model.items) {
-  //   culler.elements.add(fragment.mesh);
-  // }
-  // propertiesProcessor.process(model)
-  // highlighter.events.select.onHighlight.add((selection) => {
-  //   const fragmentID = Object.keys(selection)[0]
-  //   const expressID = Number([...selection[fragmentID]][0])
-  //   propertiesProcessor.renderProperties(model, expressID)
-  // })
-  // highlighter.updateHighlight()
-  // culler.elements.needsUpdate = true
+ifcLoader.onIfcLoaded.add(async (model: any) => {
+  for (const fragment of model.items) {
+    culler.elements.add(fragment.mesh);
+  }
+  propertiesProcessor.process(model);
+  highlighter.events.select.onHighlight.add((selection: any) => {
+    const fragmentID = Object.keys(selection)[0];
+    const expressID = Number([...selection[fragmentID]][0]);
+    propertiesProcessor.renderProperties(model, expressID);
+  });
+  highlighter.updateHighlight();
+  culler.elements.needsUpdate = true;
 });
 
 const exampleTool = new ExampleTool(viewer);
