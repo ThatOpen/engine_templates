@@ -35,6 +35,7 @@ Currently, there are two templates available:
 
 * React
 * Vanilla
+* Vanilla-Tauri
 * Vue
 
 Templates are using TypeScript as OpenBIM Components is written with it, so you can get typing help when developing your app. Keep in mind the templates are not full apps as they lack many of the functionalities from the library, but you can take them as a nice starting point to not going from the scratch.
