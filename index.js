@@ -9,7 +9,7 @@ import ncp from 'ncp';
 const require = createRequire(import.meta.url);
 const templatesPath = join(dirname(fileURLToPath(import.meta.url)), 'templates');
 
-const chooseTemplateMsg = "Choose a template for your new OpenBIM project:"
+const chooseTemplateMsg = "Choose a template for your new BIM app:"
 const completedMsg = `
 Project created successfully inside the current directory! Now execute the following in terminal:
 
