@@ -24,8 +24,8 @@ CLI command that allow to quickly start your next BIM application using [That Op
 
 Using it is really easy, just follow these steps:
 
-* Create a projecct folder anywhere you want and open it within your IDE.
-* In the terminal of the opened folder, run `npm create bim-app` and follow the prompts.
+* Create a project folder anywhere you want and open it within your IDE.
+* In the terminal of the opened folder, run `npm create bim-app@latest` and follow the prompts.
 
 ## Templates
 Currently, the following templates are available:
