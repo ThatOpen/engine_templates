@@ -54,8 +54,7 @@ export default (components: OBC.Components) => {
       properties = JSON.parse(json)
     }
 
-    // Fix this "any" by exporting RelationsMap from OBC
-    let relationsMap: any
+    let relationsMap: OBC.RelationsMap | undefined
     const relationsMapFile = zip.file("relations-map.json")
     if (relationsMapFile) {
       const json = await relationsMapFile.async("string")
@@ -66,8 +65,8 @@ export default (components: OBC.Components) => {
   }
 
   const loader = components.get(OBF.IfcStreamer);
-  // loader.world = world
 
+  // WIP!!
   async function loadTiles() {
     const input = document.createElement("input")
     input.type = "file"
@@ -103,7 +102,7 @@ export default (components: OBC.Components) => {
           propertiesData = JSON.parse(await properties.text())
         }
         try {
-          await loader.load(geometryData, true, propertiesData);
+          loader.load(geometryData, true, propertiesData);
         } catch (error) {
           alert(error)
         }
@@ -120,8 +119,8 @@ export default (components: OBC.Components) => {
         ${loadBtn}
         <bim-button @click=${loadFragments} label="Fragments" icon="fluent:puzzle-cube-piece-20-filled" tooltip-title="Load Fragments"
           tooltip-text="Loads a pre-converted IFC from a Fragments file. Use this option if you want to avoid the conversion from IFC to Fragments."></bim-button>
-        <bim-button @click=${loadTiles} label="Tiles" icon="fe:tiled" tooltip-title="Load BIM Tiles"
-        tooltip-text="Loads a pre-converted IFC from a Tiles file to stream the model. Perfect for big models."></bim-button>
+        <!-- <bim-button @click=${loadTiles} label="Tiles" icon="fe:tiled" tooltip-title="Load BIM Tiles"
+        tooltip-text="Loads a pre-converted IFC from a Tiles file to stream the model. Perfect for big models."></bim-button> -->
       </bim-toolbar-section>
     `
   })
