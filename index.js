@@ -11,12 +11,15 @@ const templatesPath = join(dirname(fileURLToPath(import.meta.url)), 'templates')
 
 const chooseTemplateMsg = "Choose a template for your new OpenBIM project:"
 const completedMsg = `
-Project created successfully inside the current directory. 
+Project created successfully inside the current directory! Now execute the following in terminal:
 
-Now execute the following in terminal:
-
+/* NPM */
 npm i
 npm run dev
+
+/* Yarn */
+yarn install
+yarn dev
 `
 
 const templateChoices = require('fs').readdirSync(templatesPath);

@@ -12,32 +12,27 @@
 
 ![cover](cover.png)
 
-<h1>Open BIM app templates <img src="https://ThatOpen.github.io/engine_components/resources/favicon.ico" width="32"/></h1>
+<h1>Open BIM App Templates <img src="https://ThatOpen.github.io/engine_components/resources/favicon.ico" width="32"/></h1>
 
 [![NPM Package][npm]][npm-url]
 [![NPM Package][npm-downloads]][npm-url]
 [![Tests](https://github.com/ThatOpen/engine_components/actions/workflows/tests.yml/badge.svg)](https://github.com/IFCjs/components/actions/workflows/tests.yaml)
 
-This repository is a CLI command that allow to quickly start your next BIM application using [OpenBIM Components](https://github.com/IFCjs/components) and [Vite](https://vitejs.dev/).
+This repository is a CLI command that allow to quickly start your next BIM application using [That Open Engine](https://github.com/thatopen/engine_components) and [Vite](https://vitejs.dev/).
 
 ### Usage
 
-Starting is really easy, just follow these steps:
+Using it is really easy, just follow these steps:
 
-* Install it globally with `npm i -g openbim-app-templates`.
-* Create a folder anywhere you want and open it within your IDE.
-* In the terminal of the opened folder, run `create-openbim-app` and follow the prompts.
-* Run `npm i` and then `npm run dev`
-* Go to the localhost provided by Vite and enjoy.
+* Create a projecct folder anywhere you want and open it within your IDE.
+* In the terminal of the opened folder, run `npm create bim-app` and follow the prompts.
 
 ## Templates
-Currently, there are two templates available:
+Currently, the following templates are available:
 
-* React
 * Vanilla
-* Vue
 
-Templates are using TypeScript as OpenBIM Components is written with it, so you can get typing help when developing your app. Keep in mind the templates are not full apps as they lack many of the functionalities from the library, but you can take them as a nice starting point to not going from the scratch.
+Templates are using TypeScript as That Open Engine is written with it, so you can get typing help when developing your app.
 
 [npm]: https://img.shields.io/npm/v/openbim-app-templates
 [npm-url]: https://www.npmjs.com/package/openbim-app-templates

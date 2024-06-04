@@ -1,10 +1,10 @@
 {
-  "name": "openbim-app-templates",
+  "name": "create-bim-app",
   "description": "Quickly start your next OpenBIM App.",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "main": "index.js",
   "bin": {
-    "create-openbim-app": "./index.js"
+    "create-bim-app": "./index.js"
   },
   "type": "module",
   "scripts": {
