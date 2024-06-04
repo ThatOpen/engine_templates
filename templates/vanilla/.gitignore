@@ -11,9 +11,6 @@ node_modules
 dist
 dist-ssr
 *.local
-templates/**/*.lock
-templates/**/*-lock.json
-templates/**/resources
 
 # Editor directories and files
 .vscode/*
