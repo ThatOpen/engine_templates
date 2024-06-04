@@ -19,8 +19,8 @@ export default (state: GroupingsUIState) => {
   const { components } = state
   const classifier = state.components.get(OBC.Classifier)
 
-  const computeTableData = () => {
-    const classifier = state.components.get(OBC.Classifier)
+  const computeTableData = (components: OBC.Components) => {
+    const classifier = components.get(OBC.Classifier)
     const data: BUI.TableGroupData[] = []
     if ("CustomSelections" in classifier.list) {
       const customSelections = classifier.list.CustomSelections
@@ -48,7 +48,7 @@ export default (state: GroupingsUIState) => {
       const onDeleteGroup = () => {
         if (!("CustomSelections" in classifier.list)) return;
         delete classifier.list.CustomSelections[value]
-        table.data = computeTableData()
+        table.data = computeTableData(state.components)
       }
 
       return BUI.html`
@@ -91,7 +91,7 @@ export default (state: GroupingsUIState) => {
   
   return BUI.Component.create<BUI.Table, GroupingsUIState>(
     (state: GroupingsUIState) => {
-      table.data = computeTableData()
+      table.data = computeTableData(state.components)
       return BUI.html`${table}`
     },
     state,
