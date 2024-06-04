@@ -11,13 +11,13 @@ const templatesPath = join(dirname(fileURLToPath(import.meta.url)), 'templates')
 
 const chooseTemplateMsg = "Choose a template for your new BIM app:"
 const completedMsg = `
-Project created successfully inside the current directory! Now execute the following in terminal:
+Project created successfully! Now execute the following in terminal:
 
-/* NPM */
+/* If using NPM */
 npm i
 npm run dev
 
-/* Yarn */
+/* If using Yarn */
 yarn install
 yarn dev
 `

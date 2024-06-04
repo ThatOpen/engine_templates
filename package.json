@@ -1,20 +1,32 @@
 {
   "name": "create-bim-app",
-  "description": "Quickly start your next OpenBIM App.",
-  "version": "1.4.3",
-  "main": "index.js",
+  "description": "Quickly start your next BIM App with That Open Engine.",
+  "version": "1.4.5",
+  "author": "That Open Company",
+  "contributors": [
+    "Juan Hoyos (https://github.com/HoyosJuan)",
+    "Antonio Gonzalez Viegas (https://github.com/agviegas)"
+  ],
   "bin": {
     "create-bim-app": "./index.js"
   },
-  "type": "module",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "license": "MIT",
+  "homepage": "https://github.com/ThatOpen/engine_templates#readme",
+  "bugs": {
+    "url": "https://github.com/ThatOpen/engine_templates/issues"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "type": "module",
+  "main": "index.js",
+  "files": [
+    "templates",
+    "index.js"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThatOpen/engine_templates.git"
+  },
   "dependencies": {
-    "inquirer": "^9.2.11",
-    "ncp": "^2.0.0"
+    "inquirer": "9.2.11",
+    "ncp": "2.0.0"
   }
 }
