@@ -16,7 +16,6 @@
 
 [![NPM Package][npm]][npm-url]
 [![NPM Package][npm-downloads]][npm-url]
-[![Tests](https://github.com/ThatOpen/engine_components/actions/workflows/tests.yml/badge.svg)](https://github.com/IFCjs/components/actions/workflows/tests.yaml)
 
 CLI command that allow to quickly start your next BIM application using [That Open Engine](https://github.com/thatopen/engine_components) and [Vite](https://vitejs.dev/).
 
