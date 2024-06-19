@@ -7,7 +7,7 @@
   |
   <a href="https://people.thatopen.com/">community</a>
   |
-  <a href="https://www.npmjs.com/package/openbim-app-templates">npm package</a>
+  <a href="https://www.npmjs.com/package/create-bim-app">npm package</a>
 </p>
 
 ![cover](cover.png)
@@ -34,6 +34,6 @@ Currently, the following templates are available:
 
 Templates are using TypeScript as That Open Engine is written with it, so you can get typing help when developing your app.
 
-[npm]: https://img.shields.io/npm/v/openbim-app-templates
-[npm-url]: https://www.npmjs.com/package/openbim-app-templates
-[npm-downloads]: https://img.shields.io/npm/dw/openbim-app-templates
+[npm]: https://img.shields.io/npm/v/create-bim-app
+[npm-url]: https://www.npmjs.com/package/create-bim-app
+[npm-downloads]: https://img.shields.io/npm/dw/create-bim-app

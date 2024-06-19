@@ -1,7 +1,7 @@
 {
   "name": "create-bim-app",
   "description": "Quickly start your next BIM App with That Open Engine.",
-  "version": "2.0.1",
+  "version": "2.0.4",
   "author": "That Open Company",
   "contributors": [
     "Juan Hoyos (https://github.com/HoyosJuan)",
@@ -17,10 +17,6 @@
   },
   "type": "module",
   "main": "index.js",
-  "files": [
-    "templates",
-    "index.js"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ThatOpen/engine_templates.git"
