@@ -1,40 +1,44 @@
-import * as BUI from "@thatopen/ui"
-import * as OBC from "@thatopen/components"
-import * as OBF from "@thatopen/components-front"
-import * as CUI from "@thatopen/ui-obc"
-import { AppManager } from "../../bim-components"
+import * as BUI from "@thatopen/ui";
+import * as OBC from "@thatopen/components";
+import * as OBF from "@thatopen/components-front";
+import * as CUI from "@thatopen/ui-obc";
+import { AppManager } from "../../bim-components";
 
 export default (components: OBC.Components) => {
-  const fragments = components.get(OBC.FragmentsManager)
-  const highlighter = components.get(OBF.Highlighter)
-  const appManager = components.get(AppManager)
-  const viewportGrid = appManager.grids.get("viewport")
-  
-  const [propsTable, updatePropsTable] = CUI.tables.elementProperties({ components, fragmentIdMap: {} })
-  propsTable.preserveStructureOnFilter = true
-  fragments.onFragmentsDisposed.add(() => updatePropsTable())
-  
-  highlighter.events.select.onHighlight.add((fragmentIdMap) => {
-    if (!viewportGrid) return
-    viewportGrid.layout = "second"
-    propsTable.expanded = false
-    updatePropsTable({fragmentIdMap})
+  const fragments = components.get(OBC.FragmentsManager);
+  const highlighter = components.get(OBF.Highlighter);
+  const appManager = components.get(AppManager);
+  const viewportGrid = appManager.grids.get("viewport");
+
+  const [propsTable, updatePropsTable] = CUI.tables.elementProperties({
+    components,
+    fragmentIdMap: {},
   });
-  
+
+  propsTable.preserveStructureOnFilter = true;
+  fragments.onFragmentsDisposed.add(() => updatePropsTable());
+
+  highlighter.events.select.onHighlight.add((fragmentIdMap) => {
+    if (!viewportGrid) return;
+    viewportGrid.layout = "second";
+    propsTable.expanded = false;
+    updatePropsTable({ fragmentIdMap });
+  });
+
   highlighter.events.select.onClear.add(() => {
-    updatePropsTable({ fragmentIdMap: {} })
-    if (!viewportGrid) return
-    viewportGrid.layout = "main"
-  })
-  
+    updatePropsTable({ fragmentIdMap: {} });
+    if (!viewportGrid) return;
+    viewportGrid.layout = "main";
+  });
+
   const search = (e: Event) => {
-    const input = e.target as BUI.TextInput
-    propsTable.queryString = input.value
-  }
+    const input = e.target as BUI.TextInput;
+    propsTable.queryString = input.value;
+  };
 
   const toggleExpanded = () => {
-    propsTable.expanded = !propsTable.expanded
-  }
+    propsTable.expanded = !propsTable.expanded;
+  };
 
   return BUI.Component.create<BUI.Panel>(() => {
     return BUI.html`
@@ -48,6 +52,6 @@ export default (components: OBC.Components) => {
           ${propsTable}
         </bim-panel-section>
       </bim-panel> 
-    `
-  })
-}
+    `;
+  });
+};
