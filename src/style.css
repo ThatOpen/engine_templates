@@ -53,6 +53,9 @@ html.bim-ui-dark {
   --bim-ui_bg-contrast-80: var(--bim-ui_gray-8);
   --bim-ui_bg-contrast-100: var(--bim-ui_gray-10);
 }
+:root {
+  --bim-ui_size-4xs: 0rem;
+}
 
 html.bim-ui-light {
   --bim-ui_bg-base: var(--bim-ui_gray-10);
@@ -83,4 +86,59 @@ bim-grid:not([floating]) > bim-panel {
 
 bim-grid[floating] > bim-toolbar {
   justify-self: center;
+}
+
+.Importar {
+  --bim-ui_size-5xl: 2.75rem !important;
+  flex-direction: unset !important;
+  display: flex !important;
+  justify-content: flex-start !important;
+}
+
+.Importar bim-toolbar-section {
+  margin-bottom: 10px; /* Espacio debajo de la sección de la barra de herramientas */
+  flex-direction: unset !important;
+  display: flex !important;
+  justify-content: flex-start !important;
+}
+
+.Camara {
+  --bim-ui_size-5xl: 2.75rem !important;
+  flex-direction: unset !important;
+  display: flex !important;
+  justify-content: flex-start !important;
+}
+
+.Camara bim-toolbar-section {
+  margin-bottom: 10px; /* Espacio debajo de la sección de la barra de herramientas */
+  flex-direction: unset !important;
+  display: flex !important;
+  justify-content: flex-start !important;
+}
+
+.Seleccion {
+  --bim-ui_size-5xl: 2.75rem !important;
+  flex-direction: unset !important;
+  display: flex !important;
+  justify-content: flex-start !important;
+}
+
+.Seleccion bim-toolbar-section {
+  margin-bottom: 10px; /* Espacio debajo de la sección de la barra de herramientas */
+  flex-direction: unset !important;
+  display: flex !important;
+  justify-content: flex-start !important;
+}
+.Medidas {
+  --bim-ui_size-5xl: 2.75rem !important;
+  flex-direction: unset !important;
+  display: flex !important;
+  justify-content: flex-start !important;
+}
+
+.Medidas bim-toolbar-section {
+  margin-bottom: 10px; /* Espacio debajo de la sección de la barra de herramientas */
+  flex-direction: unset !important;
+  display: flex !important;
+  justify-content: flex-start !important;
 }
