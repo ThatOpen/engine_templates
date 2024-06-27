@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+import * as fs from "fs"
+import * as path from "path"
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { createRequire } from 'module';
@@ -40,6 +42,7 @@ inquirer
         console.error('Failed to create project:', err);
         return;
       }
+      fs.renameSync(path.join("_gitignore"), path.join(".gitignore"))
       console.log(completedMsg);
     });
   });
