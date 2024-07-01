@@ -1,7 +1,8 @@
-import * as OBC from "@thatopen/components";
-import * as BUI from "@thatopen/ui";
+import * as OBC from '@thatopen/components';
+import * as OBF from '@thatopen/components-front';
+import * as BUI from '@thatopen/ui';
 
-export default (world: OBC.World) => {
+export default (components: OBC.Components, world: OBC.World) => {
   const { camera } = world;
 
   const onFitModel = () => {
@@ -10,41 +11,35 @@ export default (world: OBC.World) => {
     }
   };
 
+  const onFitSelected = () => {
+    const highlighter = components.get(OBF.Highlighter);
+    highlighter.zoomToSelection = !highlighter.zoomToSelection;
+  };
+
   const onLock = (e: Event) => {
     const button = e.target as BUI.Button;
     camera.enabled = !camera.enabled;
     button.active = !camera.enabled;
-    button.label = camera.enabled ? "Disable" : "Enable";
-    button.icon = camera.enabled
-      ? "tabler:lock-filled"
-      : "majesticons:unlock-open";
+    button.label = camera.enabled ? 'Disable' : 'Enable';
+    button.icon = camera.enabled ? 'tabler:lock-filled' : 'majesticons:unlock-open';
   };
-
-  // const onProjectionDropdownCreated = (e?: Element) => {
-  //   if (!(e && camera instanceof OBC.OrthoPerspectiveCamera)) return;
-  //   const dropdown = e as BUI.Dropdown
-  //   dropdown.value = [camera.projection.current]
-  // }
-
-  // const onProjectionChange = (e: Event) => {
-  //   if (!(camera instanceof OBC.OrthoPerspectiveCamera)) return
-  //   const dropdown = e.target as BUI.Dropdown
-  //   const value = dropdown.value[0]
-  //   console.log(value)
-  //   camera.projection.set(value)
-  // }
 
   return BUI.Component.create<BUI.PanelSection>(() => {
     return BUI.html`
     <div class="Camara">
       <bim-toolbar-section label="Camera" icon="ph:camera-fill" style="pointer-events: auto">
         <bim-button label="Fit Model" icon="material-symbols:fit-screen-rounded" @click=${onFitModel}></bim-button>
+        <bim-button label="Fit Selected" icon="material-symbols:fit-screen-rounded" @click=${onFitSelected}></bim-button>
         <bim-button label="Disable" icon="tabler:lock-filled" @click=${onLock} .active=${!camera.enabled}></bim-button>
         
-        <!-- <bim-dropdown required>
-          <bim-option label="Perspective"></bim-option>
+        <bim-dropdown required label="Camera projection" 
+            @change="${({ target }: { target: BUI.Dropdown }) => {
+              const selected = target.value[0] as OBC.CameraProjection;
+              world.camera.projection.set(selected);
+            }}">
+          <bim-option checked label="Perspective"></bim-option>
           <bim-option label="Orthographic"></bim-option>
-        </bim-dropdown> -->
+        </bim-dropdown>
       </bim-toolbar-section>
       </div>
     `;

@@ -1,7 +1,7 @@
-import * as OBC from "@thatopen/components";
-import * as OBF from "@thatopen/components-front";
-import * as BUI from "@thatopen/ui";
-import * as OBCF from "@thatopen/components-front";
+import * as OBC from '@thatopen/components';
+import * as OBF from '@thatopen/components-front';
+import * as BUI from '@thatopen/ui';
+import * as OBCF from '@thatopen/components-front';
 
 export default (components: OBC.Components, world?: OBC.World) => {
   const highlighter = components.get(OBF.Highlighter);
@@ -24,7 +24,7 @@ export default (components: OBC.Components, world?: OBC.World) => {
     angles.world = world;
     angles.enabled = true;
     // Aquí puedes añadir lógica adicional para la creación de mediciones de ángulos
-    console.log("Medición de ángulos activada");
+    console.log('Medición de ángulos activada');
   };
 
   // Función para manejar la medición de áreas
@@ -33,7 +33,7 @@ export default (components: OBC.Components, world?: OBC.World) => {
     areas.world = world;
     areas.enabled = true;
     // Aquí puedes añadir lógica adicional para la creación de mediciones de áreas
-    console.log("Medición de áreas activada");
+    console.log('Medición de áreas activada');
   };
 
   // Añadir la funcionalidad de medición de bordes mediante un botón
@@ -43,7 +43,7 @@ export default (components: OBC.Components, world?: OBC.World) => {
     dimensions.enabled = true;
     dimensions.create();
 
-    console.log("Medición de bordes activada mediante botón");
+    console.log('Medición de bordes activada mediante botón');
   };
 
   const FaceMeasurement = () => {
@@ -51,14 +51,14 @@ export default (components: OBC.Components, world?: OBC.World) => {
     dimensions.world = world;
     dimensions.enabled = true;
     dimensions.create();
-    console.log("Medición de caras activada mediante botón");
+    console.log('Medición de caras activada mediante botón');
   };
   const LengthMeasurement = () => {
     const dimensions = components.get(OBCF.LengthMeasurement);
     dimensions.world = world;
     dimensions.enabled = true;
     dimensions.create();
-    console.log("Medición de longitud activada mediante botón");
+    console.log('Medición de longitud activada mediante botón');
   };
 
   // Update the toolbar component to include the LengthMeasurement button

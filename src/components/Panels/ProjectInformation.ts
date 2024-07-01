@@ -1,15 +1,16 @@
-import * as BUI from "@thatopen/ui";
-import * as OBC from "@thatopen/components";
-import * as CUI from "@thatopen/ui-obc";
-import groupings from "./Sections/Groupings";
+import * as BUI from '@thatopen/ui';
+import * as OBC from '@thatopen/components';
+import * as CUI from '@thatopen/ui-obc';
+import groupings from './Sections/Groupings';
+import measurements from './Sections/Measurements';
 
 export default (components: OBC.Components) => {
   const [modelsList] = CUI.tables.modelsList({ components });
   const [relationsTree] = CUI.tables.relationsTree({
     components,
     models: [],
-    hoverHighlighterName: "hover",
-    selectHighlighterName: "select",
+    hoverHighlighterName: 'hover',
+    selectHighlighterName: 'select',
   });
   relationsTree.preserveStructureOnFilter = true;
 
@@ -27,11 +28,13 @@ export default (components: OBC.Components) => {
         <bim-panel-section label="Spatial Structures" icon="ph:tree-structure-fill">
           <div style="display: flex; gap: 0.375rem;">
             <bim-text-input @input=${search} vertical placeholder="Search..." debounce="200"></bim-text-input>
-            <bim-button style="flex: 0;" @click=${() => (relationsTree.expanded = !relationsTree.expanded)} icon="eva:expand-fill"></bim-button>
+            <bim-button style="flex: 0;" @click=${() =>
+              (relationsTree.expanded = !relationsTree.expanded)} icon="eva:expand-fill"></bim-button>
           </div>
           ${relationsTree}
         </bim-panel-section>
         ${groupings(components)}
+        ${measurements(components)}
       </bim-panel> 
     `;
   });

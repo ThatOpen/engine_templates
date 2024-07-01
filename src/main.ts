@@ -1,28 +1,24 @@
-import * as THREE from "three";
-import * as OBC from "@thatopen/components";
-import * as OBF from "@thatopen/components-front";
-import * as BUI from "@thatopen/ui";
-import projectInformation from "./components/Panels/ProjectInformation";
-import elementData from "./components/Panels/Selection";
-import settings from "./components/Panels/Settings";
-import load from "./components/Toolbars/Sections/Import";
-import help from "./components/Panels/Help";
-import camera from "./components/Toolbars/Sections/Camera";
-import selection from "./components/Toolbars/Sections/Selection";
-import Measures from "./components/Toolbars/Sections/Measures";
-import { AppManager } from "./bim-components";
+import * as THREE from 'three';
+import * as OBC from '@thatopen/components';
+import * as OBF from '@thatopen/components-front';
+import * as BUI from '@thatopen/ui';
+import projectInformation from './components/Panels/ProjectInformation';
+import elementData from './components/Panels/Selection';
+import settings from './components/Panels/Settings';
+import load from './components/Toolbars/Sections/Import';
+import help from './components/Panels/Help';
+import camera from './components/Toolbars/Sections/Camera';
+import selection from './components/Toolbars/Sections/Selection';
+import Measures from './components/Toolbars/Sections/Measures';
+import { AppManager } from './bim-components';
 
 BUI.Manager.init();
 
 const components = new OBC.Components();
 const worlds = components.get(OBC.Worlds);
 
-const world = worlds.create<
-  OBC.SimpleScene,
-  OBC.OrthoPerspectiveCamera,
-  OBF.PostproductionRenderer
->();
-world.name = "Main";
+const world = worlds.create<OBC.SimpleScene, OBC.OrthoPerspectiveCamera, OBF.PostproductionRenderer>();
+world.name = 'Main';
 
 world.scene = new OBC.SimpleScene(components);
 world.scene.setup();
@@ -51,7 +47,7 @@ const resizeWorld = () => {
   world.camera.updateAspect();
 };
 
-viewport.addEventListener("resize", resizeWorld);
+viewport.addEventListener('resize', resizeWorld);
 
 components.init();
 
@@ -61,8 +57,8 @@ postproduction.setPasses({ custom: true, ao: true, gamma: true });
 postproduction.customEffects.lineColor = 0x17191c;
 
 const appManager = components.get(AppManager);
-const viewportGrid = viewport.querySelector<BUI.Grid>("bim-grid[floating]")!;
-appManager.grids.set("viewport", viewportGrid);
+const viewportGrid = viewport.querySelector<BUI.Grid>('bim-grid[floating]')!;
+appManager.grids.set('viewport', viewportGrid);
 
 const fragments = components.get(OBC.FragmentsManager);
 const indexer = components.get(OBC.IfcRelationsIndexer);
@@ -73,7 +69,7 @@ const ifcLoader = components.get(OBC.IfcLoader);
 await ifcLoader.setup();
 
 const tilesLoader = components.get(OBF.IfcStreamer);
-tilesLoader.url = "../resources/tiles/";
+tilesLoader.url = '../resources/tiles/';
 tilesLoader.world = world;
 tilesLoader.culler.threshold = 10;
 tilesLoader.culler.maxHiddenTime = 1000;
@@ -81,13 +77,12 @@ tilesLoader.culler.maxLostTime = 40000;
 
 const highlighter = components.get(OBF.Highlighter);
 highlighter.setup({ world });
-// highlighter.zoomToSelection = true;
 
 const culler = components.get(OBC.Cullers).create(world);
 culler.threshold = 50;
 
 world.camera.controls.restThreshold = 0.25;
-world.camera.controls.addEventListener("rest", () => {
+world.camera.controls.addEventListener('rest', () => {
   culler.needsUpdate = true;
   tilesLoader.culler.needsUpdate = true;
 });
@@ -116,7 +111,8 @@ const toolbar = BUI.Component.create(() => {
   return BUI.html`
     <bim-toolbar>
       ${load(components)}
-      ${camera(world)}
+      ${load(components)}
+      ${camera(components, world)}
       ${selection(components, world)}
       ${Measures(components, world)}
     </bim-toolbar>
@@ -130,7 +126,7 @@ const topPanel = BUI.Component.create(() => {
         ${load(components)}
       </bim-tab>
       <bim-tab name="camera" label="Cámara" icon="ph:camera-fill" style="font-size: 12px; --icon-size: 16px;">
-       ${camera(world)}
+       ${camera(components, world)}
       </bim-tab>
       <bim-tab name="selection" label="Selección" icon="ph:cursor-fill" style="font-size: 12px; --icon-size: 16px;">
         ${selection(components, world)}
@@ -159,7 +155,7 @@ const leftPanel = BUI.Component.create(() => {
   `;
 });
 
-const app = document.getElementById("app") as BUI.Grid;
+const app = document.getElementById('app') as BUI.Grid;
 app.layouts = {
   main: {
     template: `
@@ -175,7 +171,7 @@ app.layouts = {
   },
 };
 
-app.layout = "main";
+app.layout = 'main';
 
 viewportGrid.layouts = {
   main: {
@@ -199,4 +195,4 @@ viewportGrid.layouts = {
   },
 };
 
-viewportGrid.layout = "main";
+viewportGrid.layout = 'main';
