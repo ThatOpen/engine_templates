@@ -83,7 +83,7 @@ highlighter.setup({ world });
 highlighter.zoomToSelection = true;
 
 const culler = components.get(OBC.Cullers).create(world);
-culler.threshold = 50;
+culler.threshold = 5;
 
 world.camera.controls.restThreshold = 0.25;
 world.camera.controls.addEventListener("rest", () => {
