@@ -43,7 +43,7 @@ export default (components: OBC.Components) => {
     return BUI.html`
     <div class="Seleccion">
       <bim-panel>
-        <bim-panel-section name="selection" label="Informacion de la Seleccion" icon="solar:document-bold" fixed>
+        <bim-panel-section name="seleccion" label="Informacion de la Seleccion" icon="solar:document-bold" fixed>
           <div style="display: flex; gap: 0.375rem;">
             <bim-text-input @input=${search} vertical placeholder="Buscar..." debounce="200"></bim-text-input>
             <bim-button style="flex: 0;" @click=${toggleExpanded} icon="eva:expand-fill"></bim-button>
@@ -51,7 +51,7 @@ export default (components: OBC.Components) => {
               propsTable.downloadData(
                 "ElementData",
                 "tsv"
-              )} icon="ph:export-fill" tooltip-title="Exportar Datos" tooltip-text="Export the shown properties to TSV."></bim-button>
+              )} icon="ph:export-fill" tooltip-title="Exportar Datos" tooltip-text="Exporta las propiedades mostradas a TSV."></bim-button>
           </div>
           ${propsTable}
         </bim-panel-section>

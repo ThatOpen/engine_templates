@@ -27,9 +27,9 @@ const askForFile = (extension: string) => {
 export default (components: OBC.Components) => {
   const [loadBtn] = CUI.buttons.loadIfc({ components });
   loadBtn.label = "IFC";
-  loadBtn.tooltipTitle = "Load IFC";
+  loadBtn.tooltipTitle = "Cargar IFC";
   loadBtn.tooltipText =
-    "Loads an IFC file into the scene. The IFC gets automatically converted to Fragments.";
+    "Cargar un IFC. Automaticamente se convierte a Fragments.";
 
   const fragments = components.get(OBC.FragmentsManager);
   const indexer = components.get(OBC.IfcRelationsIndexer);
@@ -118,10 +118,10 @@ export default (components: OBC.Components) => {
   return BUI.Component.create<BUI.PanelSection>(() => {
     return BUI.html`
       <div class="Importar">
-        <bim-toolbar-section label="Import" icon="solar:import-bold">
+        <bim-toolbar-section label="Importar" icon="solar:import-bold">
           ${loadBtn}
-          <bim-button @click=${loadFragments} label="Fragments" icon="fluent:puzzle-cube-piece-20-filled" tooltip-title="Load Fragments"
-            tooltip-text="Loads a pre-converted IFC from a Fragments file. Use this option if you want to avoid the conversion from IFC to Fragments."></bim-button>
+          <bim-button @click=${loadFragments} label="Fragments" icon="fluent:puzzle-cube-piece-20-filled" tooltip-title="Cargar Fragments"
+            tooltip-text="Carga un IFC pre-convertido de Fragment."></bim-button>
           <!-- <bim-button @click=${loadTiles} label="Tiles" icon="fe:tiled" tooltip-title="Load BIM Tiles"
           tooltip-text="Loads a pre-converted IFC from a Tiles file to stream the model. Perfect for big models."></bim-button> -->
         </bim-toolbar-section>

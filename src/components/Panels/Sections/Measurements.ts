@@ -1,7 +1,7 @@
-import * as OBC from '@thatopen/components';
-import * as BUI from '@thatopen/ui';
-import * as OBCF from '@thatopen/components-front';
-import measurementsTable from '../../Tables/MeasurementsTable';
+import * as OBC from "@thatopen/components";
+import * as BUI from "@thatopen/ui";
+import * as OBCF from "@thatopen/components-front";
+import measurementsTable from "../../Tables/MeasurementsTable";
 
 export default (components: OBC.Components) => {
   const [MeasurementsTable, updateMeasurementsTable] = measurementsTable({
@@ -12,7 +12,7 @@ export default (components: OBC.Components) => {
   const onFormCreated = (e?: Element) => {
     if (!e) return;
     newSelectionForm = e as HTMLDivElement;
-    newSelectionForm.style.display = 'flex';
+    newSelectionForm.style.display = "flex";
   };
 
   const onMeasurementsClicked = (e?: Element) => {
@@ -28,7 +28,7 @@ export default (components: OBC.Components) => {
 
   return BUI.Component.create<BUI.PanelSection>(() => {
     return BUI.html`
-      <bim-panel-section @click=${onMeasurementsClicked} label="Measurements" icon="ri:ruler-line">
+      <bim-panel-section @click=${onMeasurementsClicked} label="Medidas" icon="ri:ruler-line">
 		<div ${BUI.ref(onFormCreated)} style="display: none; gap: 0.5rem">
 			${MeasurementsTable}
 		</div>
