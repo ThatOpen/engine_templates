@@ -108,6 +108,13 @@ fragments.onFragmentsLoaded.add(async (model) => {
   }, 50);
 });
 
+fragments.onFragmentsDisposed.add(({ fragmentIDs }) => {
+  for (const fragmentID of fragmentIDs) {
+    const mesh = [...world.meshes].find((mesh) => mesh.uuid === fragmentID);
+    if (mesh) world.meshes.delete(mesh);
+  }
+});
+
 const projectInformationPanel = projectInformation(components);
 const elementDataPanel = elementData(components);
 
