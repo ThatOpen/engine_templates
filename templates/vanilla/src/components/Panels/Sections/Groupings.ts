@@ -45,7 +45,7 @@ export default (components: OBC.Components) => {
     newSelectionForm.style.display = "none";
     saveSelectionBtn.style.display = "none";
     const classifier = components.get(OBC.Classifier);
-    classifier.list.CustomSelections[groupNameInput.value] =
+    classifier.list.CustomSelections[groupNameInput.value].map =
       highlighter.selection.select;
     updateCustomSelections();
     groupNameInput.value = "";

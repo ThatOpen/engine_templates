@@ -25,7 +25,7 @@ export default (state: GroupingsUIState) => {
     if ("CustomSelections" in classifier.list) {
       const customSelections = classifier.list.CustomSelections;
       for (const group in customSelections) {
-        const fragmentIdMap = customSelections[group];
+        const fragmentIdMap = customSelections[group].map;
         const groupRow: BUI.TableGroupData = {
           data: {
             Name: group,
