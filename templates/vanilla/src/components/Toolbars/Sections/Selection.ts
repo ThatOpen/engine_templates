@@ -1,3 +1,4 @@
+import * as THREE from "three";
 import * as OBC from "@thatopen/components";
 import * as OBF from "@thatopen/components-front";
 import * as BUI from "@thatopen/ui";
@@ -6,13 +7,18 @@ export default (components: OBC.Components, world?: OBC.World) => {
   const highlighter = components.get(OBF.Highlighter);
   const hider = components.get(OBC.Hider);
   const fragments = components.get(OBC.FragmentsManager);
+  const cullers = components.get(OBC.Cullers);
 
   const onToggleVisibility = () => {
     const selection = highlighter.selection.select;
-    if (Object.keys(selection).length === 0) return;
+    if (Object.keys(selection).length === 0) {
+      return;
+    }
+    const meshes = new Set<THREE.InstancedMesh>();
     for (const fragmentID in selection) {
       const fragment = fragments.list.get(fragmentID);
       if (!fragment) continue;
+      meshes.add(fragment.mesh);
       const expressIDs = selection[fragmentID];
       for (const id of expressIDs) {
         const isHidden = fragment.hiddenItems.has(id);
@@ -23,20 +29,21 @@ export default (components: OBC.Components, world?: OBC.World) => {
         }
       }
     }
+    cullers.updateInstanced(meshes);
   };
 
   const onIsolate = () => {
     const selection = highlighter.selection.select;
     if (Object.keys(selection).length === 0) return;
+
+    const meshes = new Set<THREE.InstancedMesh>();
+
     for (const [, fragment] of fragments.list) {
       fragment.setVisibility(false);
-      const cullers = components.get(OBC.Cullers);
-      for (const [, culler] of cullers.list) {
-        const culled = culler.colorMeshes.get(fragment.id);
-        if (culled) culled.count = fragment.mesh.count;
-      }
+      meshes.add(fragment.mesh);
     }
     hider.set(true, selection);
+    cullers.updateInstanced(meshes);
   };
 
   const onShowAll = () => {
