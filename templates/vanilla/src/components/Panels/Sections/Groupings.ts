@@ -41,12 +41,17 @@ export default (components: OBC.Components) => {
   };
 
   const onSaveGroupSelection = async () => {
-    if (!(groupNameInput && groupNameInput.value.trim() !== "")) return;
+    const groupName = groupNameInput.value;
+    if (!(groupNameInput && groupName.trim() !== "")) return;
     newSelectionForm.style.display = "none";
     saveSelectionBtn.style.display = "none";
     const classifier = components.get(OBC.Classifier);
-    classifier.list.CustomSelections[groupNameInput.value].map =
-      highlighter.selection.select;
+    const customSelections = classifier.list.CustomSelections;
+    customSelections[groupName] = {
+      name: groupName,
+      map: highlighter.selection.select,
+      id: null,
+    };
     updateCustomSelections();
     groupNameInput.value = "";
   };

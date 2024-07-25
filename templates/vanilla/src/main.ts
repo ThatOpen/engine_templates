@@ -120,11 +120,20 @@ const elementDataPanel = elementData(components);
 
 const toolbar = BUI.Component.create(() => {
   return BUI.html`
-    <bim-toolbar>
-      ${load(components)}
-      ${camera(world)}
-      ${selection(components, world)}
-    </bim-toolbar>
+    <bim-tabs floating style="justify-self: center; border-radius: 0.5rem;">
+      <bim-tab label="Import">
+        <bim-toolbar>
+          ${load(components)}
+        </bim-toolbar>
+      </bim-tab>
+      <bim-tab label="Selection">
+        <bim-toolbar>
+          ${camera(world)}
+          ${selection(components, world)}
+        </bim-toolbar>
+      </bim-tab>
+      <bim-tab label="Measurement"></bim-tab>
+    </bim-tabs>
   `;
 });
 
