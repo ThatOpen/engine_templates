@@ -31,6 +31,7 @@ export default (components: OBC.Components) => {
           </div>
           ${relationsTree}
         </bim-panel-section>
+        
         ${groupings(components)}
       </bim-panel> 
     `;

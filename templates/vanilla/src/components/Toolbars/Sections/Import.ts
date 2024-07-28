@@ -5,6 +5,7 @@ import * as BUI from "@thatopen/ui";
 import * as CUI from "@thatopen/ui-obc";
 import * as FRAGS from "@thatopen/fragments";
 import Zip from "jszip";
+import { AppManager } from "../../../bim-components";
 
 const input = document.createElement("input");
 const askForFile = (extension: string) => {
@@ -66,54 +67,13 @@ export default (components: OBC.Components) => {
     fragments.load(geometry, { properties, relationsMap });
   };
 
-  const loader = components.get(OBF.IfcStreamer);
-
-  // WIP!!
   async function loadTiles() {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = ".json";
-    input.multiple = true;
-    input.addEventListener("change", async () => {
-      if (!input.files) return;
-      const grouped: Record<string, { geometry: File; properties?: File }> = {};
-      for (const file of input.files) {
-        const { name } = file;
-        const key = name
-          .replace("-processed.json", "")
-          .replace("-processed-properties.json", "");
-        if (!grouped[key]) {
-          grouped[key] = { geometry: new File([], "asd") };
-        }
-        if (name.includes("-processed.json")) {
-          grouped[key].geometry = file;
-        } else if (name.includes("-processed-properties.json")) {
-          grouped[key].properties = file;
-        }
-      }
-
-      const pairs: { geometry: File; properties?: File }[] = [];
-      for (const key in grouped) {
-        const pair = grouped[key];
-        if (pair.geometry) pairs.push(pair);
-      }
-
-      for (const pair of pairs) {
-        const { geometry, properties } = pair;
-        const geometryData = JSON.parse(await geometry.text());
-        let propertiesData;
-        if (properties) {
-          propertiesData = JSON.parse(await properties.text());
-        }
-        try {
-          loader.load(geometryData, true, propertiesData);
-        } catch (error) {
-          alert(error);
-        }
-      }
-    });
-
-    input.click();
+    const appManager = components.get(AppManager);
+    const viewportGrid = appManager.grids.get("viewport");
+    if (!viewportGrid) {
+      throw new Error("Viewport grid not found!");
+    }
+    viewportGrid.layout = "tilesInput";
   }
 
   return BUI.Component.create<BUI.PanelSection>(() => {

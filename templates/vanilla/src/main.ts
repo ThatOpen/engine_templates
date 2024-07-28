@@ -72,7 +72,6 @@ const ifcLoader = components.get(OBC.IfcLoader);
 await ifcLoader.setup();
 
 const tilesLoader = components.get(OBF.IfcStreamer);
-tilesLoader.url = "../resources/tiles/";
 tilesLoader.world = world;
 tilesLoader.culler.threshold = 10;
 tilesLoader.culler.maxHiddenTime = 1000;
@@ -97,21 +96,28 @@ fragments.onFragmentsLoaded.add(async (model) => {
     classifier.byEntity(model);
   }
 
-  for (const fragment of model.items) {
-    world.meshes.add(fragment.mesh);
-    culler.add(fragment.mesh);
+  if (!model.isStreamed) {
+    for (const fragment of model.items) {
+      world.meshes.add(fragment.mesh);
+      culler.add(fragment.mesh);
+    }
   }
 
   world.scene.three.add(model);
-  setTimeout(async () => {
-    world.camera.fit(world.meshes, 0.8);
-  }, 50);
+
+  if (!model.isStreamed) {
+    setTimeout(async () => {
+      world.camera.fit(world.meshes, 0.8);
+    }, 50);
+  }
 });
 
 fragments.onFragmentsDisposed.add(({ fragmentIDs }) => {
   for (const fragmentID of fragmentIDs) {
     const mesh = [...world.meshes].find((mesh) => mesh.uuid === fragmentID);
-    if (mesh) world.meshes.delete(mesh);
+    if (mesh) {
+      world.meshes.delete(mesh);
+    }
   }
 });
 
@@ -169,6 +175,75 @@ app.layouts = {
 
 app.layout = "main";
 
+const onStreamInpuChange = () => {
+  const streamBaseUrlInput = document.getElementById(
+    "stream-base-url-input",
+  ) as BUI.TextInput;
+
+  const streamBaseNameInput = document.getElementById(
+    "stream-base-name-input",
+  ) as BUI.TextInput;
+
+  const streamLoadButton = document.getElementById(
+    "stream-load-button",
+  ) as BUI.TextInput;
+
+  const validUrl = streamBaseUrlInput.value.length !== 0;
+  const validName = streamBaseNameInput.value.length !== 0;
+  // TODO: Fix this in ui library types
+  // @ts-ignore
+  streamLoadButton.disabled = !(validUrl && validName);
+
+  if (!streamLoadButton.onclick) {
+    streamLoadButton.onclick = async () => {
+      // TODO: Temp until we update config
+      const baseUrl = localStorage.getItem("base-streaming-url") || "";
+
+      const streamBaseNameInput = document.getElementById(
+        "stream-base-name-input",
+      ) as BUI.TextInput;
+
+      const baseName = streamBaseNameInput.value;
+      const geometryURL = `${baseUrl}${baseName}-processed.json`;
+      const propertiesURL = `${baseUrl}${baseName}-processed-properties.json`;
+      const streamer = components.get(OBF.IfcStreamer);
+
+      streamer.url = baseUrl;
+
+      const rawGeometryData = await fetch(geometryURL);
+      const geometryData = await rawGeometryData.json();
+      let propertiesData;
+      if (propertiesURL) {
+        const rawPropertiesData = await fetch(propertiesURL);
+        propertiesData = await rawPropertiesData.json();
+      }
+
+      const model = await streamer.load(geometryData, true, propertiesData);
+      console.log(model);
+
+      const indexer = components.get(OBC.IfcRelationsIndexer);
+      console.log(indexer);
+
+      window.setTimeout(() => {
+        streamer.culler.needsUpdate = true;
+      }, 1000);
+
+      viewportGrid.layout = "main";
+    };
+  }
+};
+
+const modal = BUI.Component.create<BUI.Panel>(() => {
+  return BUI.html`
+      <bim-panel style="height: min-content; margin-top: auto; margin-left: auto; margin-right: auto">
+        <bim-panel-section name="streaming-source" label="Streaming Source" icon="solar:document-bold" fixed>
+          <bim-text-input id="stream-base-name-input" @input="${onStreamInpuChange}" label="Base name"></bim-text-input>
+          <bim-button id="stream-load-button" disabled label="Load!"></bim-button>
+        </bim-panel-section>
+      </bim-panel> 
+    `;
+});
+
 viewportGrid.layouts = {
   main: {
     template: `
@@ -176,7 +251,7 @@ viewportGrid.layouts = {
       "toolbar" auto
       /1fr
     `,
-    elements: { toolbar },
+    elements: { toolbar, modal },
   },
   second: {
     template: `
@@ -188,6 +263,15 @@ viewportGrid.layouts = {
       toolbar,
       elementDataPanel,
     },
+  },
+  tilesInput: {
+    template: `
+      "empty" 1fr
+      "modal" 1fr
+      "toolbar" auto
+      /1fr
+    `,
+    elements: { toolbar, modal },
   },
 };
 
