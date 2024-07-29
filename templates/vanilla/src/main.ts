@@ -8,6 +8,7 @@ import settings from "./components/Panels/Settings";
 import load from "./components/Toolbars/Sections/Import";
 import help from "./components/Panels/Help";
 import camera from "./components/Toolbars/Sections/Camera";
+import measurement from "./components/Toolbars/Sections/Measurement";
 import selection from "./components/Toolbars/Sections/Selection";
 import { AppManager } from "./bim-components";
 
@@ -138,7 +139,11 @@ const toolbar = BUI.Component.create(() => {
           ${selection(components, world)}
         </bim-toolbar>
       </bim-tab>
-      <bim-tab label="Measurement"></bim-tab>
+      <bim-tab label="Measurement">
+        <bim-toolbar>
+            ${measurement(world, components)}
+        </bim-toolbar>      
+      </bim-tab>
     </bim-tabs>
   `;
 });
