@@ -218,11 +218,7 @@ const onStreamInpuChange = () => {
         propertiesData = await rawPropertiesData.json();
       }
 
-      const model = await streamer.load(geometryData, true, propertiesData);
-      console.log(model);
-
-      const indexer = components.get(OBC.IfcRelationsIndexer);
-      console.log(indexer);
+      await streamer.load(geometryData, true, propertiesData);
 
       window.setTimeout(() => {
         streamer.culler.needsUpdate = true;
