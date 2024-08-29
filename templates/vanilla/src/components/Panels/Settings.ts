@@ -26,19 +26,6 @@ export default (components: OBC.Components) => {
     worldsTable.queryString = input.value;
   };
 
-  // TODO: Temp until we update config
-  const onStreamBaseUrlChange = (e: Event) => {
-    const input = e.target as BUI.TextInput;
-    localStorage.setItem("base-streaming-url", input.value);
-  };
-
-  const streamBaseUrlInput = BUI.Component.create<BUI.TextInput>(() => {
-    const value = localStorage.getItem("base-streaming-url") || "";
-    return BUI.html`
-    <bim-text-input id="stream-base-url-input" @input="${onStreamBaseUrlChange}" value="${value}" label="Streaming Base URL"></bim-text-input>
-    `;
-  });
-
   return BUI.Component.create<BUI.Panel>(() => {
     return BUI.html`
       <bim-panel>
@@ -63,7 +50,6 @@ export default (components: OBC.Components) => {
             <bim-button style="flex: 0;" @click=${() => (worldsTable.expanded = !worldsTable.expanded)} icon="eva:expand-fill"></bim-button>
           </div>
           ${worldsTable}
-          ${streamBaseUrlInput}
         </bim-panel-section>
       </bim-panel> 
     `;
