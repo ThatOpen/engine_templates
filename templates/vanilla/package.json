@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@thatopen/components": "2.3.0-alpha.5",
-    "@thatopen/components-front": "2.3.0-alpha.10",
+    "@thatopen/components-front": "2.3.0-alpha.11",
     "@thatopen/fragments": "2.3.0-alpha.2",
     "@thatopen/ui": "~2.2.0",
     "@thatopen/ui-obc": "~2.2.0",

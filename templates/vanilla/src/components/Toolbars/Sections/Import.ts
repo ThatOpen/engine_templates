@@ -68,6 +68,9 @@ export default (components: OBC.Components) => {
 
   const streamer = components.get(OBF.IfcStreamer) as OBF.IfcStreamer;
 
+  // We are opening local files, so no cache use needed
+  streamer.useCache = false;
+
   const streamedDirectories: { [name: string]: any } = {};
 
   const getStreamDirName = (name: string) => {

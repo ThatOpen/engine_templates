@@ -88,6 +88,7 @@ culler.threshold = 5;
 world.camera.controls.restThreshold = 0.25;
 world.camera.controls.addEventListener("rest", () => {
   culler.needsUpdate = true;
+  tilesLoader.cancel = true;
   tilesLoader.culler.needsUpdate = true;
 });
 
