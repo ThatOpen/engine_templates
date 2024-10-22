@@ -88,6 +88,7 @@ culler.threshold = 5;
 world.camera.controls.restThreshold = 0.25;
 world.camera.controls.addEventListener("rest", () => {
   culler.needsUpdate = true;
+  tilesLoader.cancel = true;
   tilesLoader.culler.needsUpdate = true;
 });
 
@@ -180,71 +181,6 @@ app.layouts = {
 
 app.layout = "main";
 
-const onStreamInpuChange = () => {
-  const streamBaseUrlInput = document.getElementById(
-    "stream-base-url-input",
-  ) as BUI.TextInput;
-
-  const streamBaseNameInput = document.getElementById(
-    "stream-base-name-input",
-  ) as BUI.TextInput;
-
-  const streamLoadButton = document.getElementById(
-    "stream-load-button",
-  ) as BUI.TextInput;
-
-  const validUrl = streamBaseUrlInput.value.length !== 0;
-  const validName = streamBaseNameInput.value.length !== 0;
-  // TODO: Fix this in ui library types
-  // @ts-ignore
-  streamLoadButton.disabled = !(validUrl && validName);
-
-  if (!streamLoadButton.onclick) {
-    streamLoadButton.onclick = async () => {
-      // TODO: Temp until we update config
-      const baseUrl = localStorage.getItem("base-streaming-url") || "";
-
-      const streamBaseNameInput = document.getElementById(
-        "stream-base-name-input",
-      ) as BUI.TextInput;
-
-      const baseName = streamBaseNameInput.value;
-      const geometryURL = `${baseUrl}${baseName}-processed.json`;
-      const propertiesURL = `${baseUrl}${baseName}-processed-properties.json`;
-      const streamer = components.get(OBF.IfcStreamer);
-
-      streamer.url = baseUrl;
-
-      const rawGeometryData = await fetch(geometryURL);
-      const geometryData = await rawGeometryData.json();
-      let propertiesData;
-      if (propertiesURL) {
-        const rawPropertiesData = await fetch(propertiesURL);
-        propertiesData = await rawPropertiesData.json();
-      }
-
-      await streamer.load(geometryData, true, propertiesData);
-
-      window.setTimeout(() => {
-        streamer.culler.needsUpdate = true;
-      }, 1000);
-
-      viewportGrid.layout = "main";
-    };
-  }
-};
-
-const modal = BUI.Component.create<BUI.Panel>(() => {
-  return BUI.html`
-      <bim-panel style="height: min-content; margin-top: auto; margin-left: auto; margin-right: auto">
-        <bim-panel-section name="streaming-source" label="Streaming Source" icon="solar:document-bold" fixed>
-          <bim-text-input id="stream-base-name-input" @input="${onStreamInpuChange}" label="Base name"></bim-text-input>
-          <bim-button id="stream-load-button" disabled label="Load!"></bim-button>
-        </bim-panel-section>
-      </bim-panel> 
-    `;
-});
-
 viewportGrid.layouts = {
   main: {
     template: `
@@ -252,7 +188,7 @@ viewportGrid.layouts = {
       "toolbar" auto
       /1fr
     `,
-    elements: { toolbar, modal },
+    elements: { toolbar },
   },
   second: {
     template: `
@@ -264,15 +200,6 @@ viewportGrid.layouts = {
       toolbar,
       elementDataPanel,
     },
-  },
-  tilesInput: {
-    template: `
-      "empty" 1fr
-      "modal" 1fr
-      "toolbar" auto
-      /1fr
-    `,
-    elements: { toolbar, modal },
   },
 };
 

@@ -5,7 +5,6 @@ import * as BUI from "@thatopen/ui";
 import * as CUI from "@thatopen/ui-obc";
 import * as FRAGS from "@thatopen/fragments";
 import Zip from "jszip";
-import { AppManager } from "../../../bim-components";
 
 const input = document.createElement("input");
 const askForFile = (extension: string) => {
@@ -67,13 +66,70 @@ export default (components: OBC.Components) => {
     fragments.load(geometry, { properties, relationsMap });
   };
 
+  const streamer = components.get(OBF.IfcStreamer) as OBF.IfcStreamer;
+
+  // We are opening local files, so no cache use needed
+  streamer.useCache = false;
+
+  const streamedDirectories: { [name: string]: any } = {};
+
+  const getStreamDirName = (name: string) => {
+    return name.substring(0, name.indexOf(".ifc"));
+  };
+
+  streamer.fetch = async (path: string) => {
+    const name = path.substring(path.lastIndexOf("/") + 1);
+    const modelName = getStreamDirName(name);
+    const directory = streamedDirectories[modelName];
+    const fileHandle = await directory.getFileHandle(name);
+    return fileHandle.getFile();
+  };
+
+  FRAGS.FragmentsGroup.fetch = async (name: string) => {
+    const modelName = getStreamDirName(name);
+    const directory = streamedDirectories[modelName];
+    const fileHandle = await directory.getFileHandle(name);
+    return fileHandle.getFile();
+  };
+
   async function loadTiles() {
-    const appManager = components.get(AppManager);
-    const viewportGrid = appManager.grids.get("viewport");
-    if (!viewportGrid) {
-      throw new Error("Viewport grid not found!");
+    let currentDirectory: any | null = null;
+    const directoryInitialized = false;
+
+    try {
+      // @ts-ignore
+      currentDirectory = await window.showDirectoryPicker();
+    } catch (e) {
+      return;
     }
-    viewportGrid.layout = "tilesInput";
+
+    const geometryFilePattern = /-processed.json$/;
+    const propertiesFilePattern = /-processed-properties.json$/;
+
+    let geometryData: any | undefined;
+    let propertiesData: any | undefined;
+
+    for await (const entry of currentDirectory.values()) {
+      if (!directoryInitialized) {
+        const name = getStreamDirName(entry.name);
+        streamedDirectories[name] = currentDirectory;
+      }
+
+      if (geometryFilePattern.test(entry.name)) {
+        const file = (await entry.getFile()) as File;
+        geometryData = await JSON.parse(await file.text());
+        continue;
+      }
+
+      if (propertiesFilePattern.test(entry.name)) {
+        const file = (await entry.getFile()) as File;
+        propertiesData = await JSON.parse(await file.text());
+      }
+    }
+
+    if (geometryData) {
+      await streamer.load(geometryData, false, propertiesData);
+    }
   }
 
   return BUI.Component.create<BUI.PanelSection>(() => {
