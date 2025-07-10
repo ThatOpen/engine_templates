@@ -1,7 +1,7 @@
-import * as BUI from "@thatopen-platform/ui-beta";
-import * as OBC from "@thatopen-platform/components-beta";
-import * as OBF from "@thatopen-platform/components-front-beta";
-import * as FRAGS from "@thatopen-platform/fragments-beta";
+import * as BUI from "@thatopen/ui";
+import * as OBC from "@thatopen/components";
+import * as OBF from "@thatopen/components-front";
+import * as FRAGS from "@thatopen/fragments";
 import * as THREE from "three";
 import { appIcons, tooltips } from "../../globals";
 

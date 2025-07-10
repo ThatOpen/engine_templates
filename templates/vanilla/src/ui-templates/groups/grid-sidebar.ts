@@ -1,4 +1,4 @@
-import * as BUI from "@thatopen-platform/ui-beta";
+import * as BUI from "@thatopen/ui";
 import { appIcons } from "../../globals";
 
 export interface GridSidebarState {

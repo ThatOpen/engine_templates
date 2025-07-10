@@ -1,6 +1,6 @@
-import * as BUI from "@thatopen-platform/ui-beta";
-import * as OBC from "@thatopen-platform/components-beta";
-import * as OBF from "@thatopen-platform/components-front-beta";
+import * as BUI from "@thatopen/ui";
+import * as OBC from "@thatopen/components";
+import * as OBF from "@thatopen/components-front";
 import { appIcons } from "../../globals";
 
 interface ViewportSettingsState {

@@ -1,6 +1,6 @@
-import * as OBC from "@thatopen-platform/components-beta";
-import * as OBF from "@thatopen-platform/components-front-beta";
-import * as BUI from "@thatopen-platform/ui-beta";
+import * as OBC from "@thatopen/components";
+import * as OBF from "@thatopen/components-front";
+import * as BUI from "@thatopen/ui";
 import { ViewerToolbarState, viewerToolbarTemplate } from "..";
 import { appIcons } from "../../globals";
 

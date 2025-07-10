@@ -1,6 +1,6 @@
-import * as BUI from "@thatopen-platform/ui-beta";
-import * as CUI from "@thatopen-platform/ui-obc-beta";
-import * as OBC from "@thatopen-platform/components-beta";
+import * as BUI from "@thatopen/ui";
+import * as CUI from "@thatopen/ui-obc";
+import * as OBC from "@thatopen/components";
 import { appIcons } from "../../globals";
 
 export interface ModelsPanelState {

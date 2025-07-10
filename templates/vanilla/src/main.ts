@@ -1,7 +1,7 @@
 import * as THREE from "three";
-import * as OBC from "@thatopen-platform/components-beta";
-import * as OBF from "@thatopen-platform/components-front-beta";
-import * as BUI from "@thatopen-platform/ui-beta";
+import * as OBC from "@thatopen/components";
+import * as OBF from "@thatopen/components-front";
+import * as BUI from "@thatopen/ui";
 import * as TEMPLATES from "./ui-templates";
 import { appIcons, CONTENT_GRID_ID } from "./globals";
 import { viewportSettingsTemplate } from "./ui-templates/buttons/viewport-settings";
@@ -84,9 +84,7 @@ aoPass.updateGtaoMaterial(aoParameters);
 aoPass.updatePdMaterial(pdParameters);
 
 const fragments = components.get(OBC.FragmentsManager);
-fragments.init(
-  "/node_modules/@thatopen-platform/fragments-beta/dist/Worker/worker.mjs",
-);
+fragments.init("/node_modules/@thatopen/fragments/dist/Worker/worker.mjs");
 
 fragments.core.models.materials.list.onItemSet.add(({ value: material }) => {
   const isLod = "isLodMaterial" in material && material.isLodMaterial;

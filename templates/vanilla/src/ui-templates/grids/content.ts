@@ -1,5 +1,5 @@
-import * as OBC from "@thatopen-platform/components-beta";
-import * as BUI from "@thatopen-platform/ui-beta";
+import * as OBC from "@thatopen/components";
+import * as BUI from "@thatopen/ui";
 import * as TEMPLATES from "..";
 import {
   CONTENT_GRID_GAP,
