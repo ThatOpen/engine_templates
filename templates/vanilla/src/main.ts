@@ -1,18 +1,14 @@
 import * as THREE from "three";
-import * as OBC from "@thatopen/components";
-import * as OBF from "@thatopen/components-front";
-import * as BUI from "@thatopen/ui";
-import projectInformation from "./components/Panels/ProjectInformation";
-import elementData from "./components/Panels/Selection";
-import settings from "./components/Panels/Settings";
-import load from "./components/Toolbars/Sections/Import";
-import help from "./components/Panels/Help";
-import camera from "./components/Toolbars/Sections/Camera";
-import measurement from "./components/Toolbars/Sections/Measurement";
-import selection from "./components/Toolbars/Sections/Selection";
-import { AppManager } from "./bim-components";
+import * as OBC from "@thatopen-platform/components-beta";
+import * as OBF from "@thatopen-platform/components-front-beta";
+import * as BUI from "@thatopen-platform/ui-beta";
+import * as TEMPLATES from "./ui-templates";
+import { appIcons, CONTENT_GRID_ID } from "./globals";
+import { viewportSettingsTemplate } from "./ui-templates/buttons/viewport-settings";
 
 BUI.Manager.init();
+
+// Components Setup
 
 const components = new OBC.Components();
 const worlds = components.get(OBC.Worlds);
@@ -22,27 +18,24 @@ const world = worlds.create<
   OBC.OrthoPerspectiveCamera,
   OBF.PostproductionRenderer
 >();
-world.name = "Main";
 
+world.name = "Main";
 world.scene = new OBC.SimpleScene(components);
 world.scene.setup();
-world.scene.three.background = null;
+world.scene.three.background = new THREE.Color(0x1a1d23);
 
 const viewport = BUI.Component.create<BUI.Viewport>(() => {
-  return BUI.html`
-    <bim-viewport>
-      <bim-grid floating></bim-grid>
-    </bim-viewport>
-  `;
+  return BUI.html`<bim-viewport></bim-viewport>`;
 });
 
 world.renderer = new OBF.PostproductionRenderer(components, viewport);
-const { postproduction } = world.renderer;
-
 world.camera = new OBC.OrthoPerspectiveCamera(components);
+world.camera.threePersp.near = 0.01;
+world.camera.threePersp.updateProjectionMatrix();
+world.camera.controls.restThreshold = 0.05;
 
 const worldGrid = components.get(OBC.Grids).create(world);
-worldGrid.material.uniforms.uColor.value = new THREE.Color(0x424242);
+worldGrid.material.uniforms.uColor.value = new THREE.Color(0x494b50);
 worldGrid.material.uniforms.uSize1.value = 2;
 worldGrid.material.uniforms.uSize2.value = 8;
 
@@ -53,154 +46,245 @@ const resizeWorld = () => {
 
 viewport.addEventListener("resize", resizeWorld);
 
+world.dynamicAnchor = false;
+
 components.init();
 
-postproduction.enabled = true;
-postproduction.customEffects.excludedMeshes.push(worldGrid.three);
-postproduction.setPasses({ custom: true, ao: true, gamma: true });
-postproduction.customEffects.lineColor = 0x17191c;
+components.get(OBC.Raycasters).get(world);
 
-const appManager = components.get(AppManager);
-const viewportGrid = viewport.querySelector<BUI.Grid>("bim-grid[floating]")!;
-appManager.grids.set("viewport", viewportGrid);
+const { postproduction } = world.renderer;
+postproduction.enabled = true;
+postproduction.style = OBF.PostproductionAspect.COLOR_SHADOWS;
+
+const { aoPass, edgesPass } = world.renderer.postproduction;
+
+edgesPass.color = new THREE.Color(0x494b50);
+
+const aoParameters = {
+  radius: 0.25,
+  distanceExponent: 1,
+  thickness: 1,
+  scale: 1,
+  samples: 16,
+  distanceFallOff: 1,
+  screenSpaceRadius: true,
+};
+
+const pdParameters = {
+  lumaPhi: 10,
+  depthPhi: 2,
+  normalPhi: 3,
+  radius: 4,
+  radiusExponent: 1,
+  rings: 2,
+  samples: 16,
+};
+
+aoPass.updateGtaoMaterial(aoParameters);
+aoPass.updatePdMaterial(pdParameters);
 
 const fragments = components.get(OBC.FragmentsManager);
-const indexer = components.get(OBC.IfcRelationsIndexer);
-const classifier = components.get(OBC.Classifier);
-classifier.list.CustomSelections = {};
+fragments.init(
+  "/node_modules/@thatopen-platform/fragments-beta/dist/Worker/worker.mjs",
+);
+
+fragments.core.models.materials.list.onItemSet.add(({ value: material }) => {
+  const isLod = "isLodMaterial" in material && material.isLodMaterial;
+  if (isLod) {
+    world.renderer!.postproduction.basePass.isolatedMaterials.push(material);
+  }
+});
+
+world.camera.projection.onChanged.add(() => {
+  for (const [_, model] of fragments.list) {
+    model.useCamera(world.camera.three);
+  }
+});
+
+world.camera.controls.addEventListener("rest", () => {
+  fragments.core.update(true);
+});
 
 const ifcLoader = components.get(OBC.IfcLoader);
-await ifcLoader.setup();
-
-const tilesLoader = components.get(OBF.IfcStreamer);
-tilesLoader.world = world;
-tilesLoader.culler.threshold = 10;
-tilesLoader.culler.maxHiddenTime = 1000;
-tilesLoader.culler.maxLostTime = 40000;
+await ifcLoader.setup({
+  autoSetWasm: false,
+  wasm: { absolute: true, path: "https://unpkg.com/web-ifc@0.0.68/" },
+});
 
 const highlighter = components.get(OBF.Highlighter);
-highlighter.setup({ world });
-highlighter.zoomToSelection = true;
-
-const culler = components.get(OBC.Cullers).create(world);
-culler.threshold = 5;
-
-world.camera.controls.restThreshold = 0.25;
-world.camera.controls.addEventListener("rest", () => {
-  culler.needsUpdate = true;
-  tilesLoader.cancel = true;
-  tilesLoader.culler.needsUpdate = true;
+highlighter.setup({
+  world,
+  selectMaterialDefinition: {
+    color: new THREE.Color("#bcf124"),
+    renderedFaces: 1,
+    opacity: 1,
+    transparent: false,
+  },
 });
 
-fragments.onFragmentsLoaded.add(async (model) => {
-  if (model.hasProperties) {
-    await indexer.process(model);
-    classifier.byEntity(model);
-  }
+// Clipper Setup
+const clipper = components.get(OBC.Clipper);
+viewport.ondblclick = () => {
+  if (clipper.enabled) clipper.create(world);
+};
 
-  if (!model.isStreamed) {
-    for (const fragment of model.items) {
-      world.meshes.add(fragment.mesh);
-      culler.add(fragment.mesh);
+window.addEventListener("keydown", (event) => {
+  if (event.code === "Delete" || event.code === "Backspace") {
+    clipper.delete(world);
+  }
+});
+
+// Length Measurement Setup
+const lengthMeasurer = components.get(OBF.LengthMeasurement);
+lengthMeasurer.world = world;
+lengthMeasurer.color = new THREE.Color("#6528d7");
+
+lengthMeasurer.list.onItemAdded.add((line) => {
+  const center = new THREE.Vector3();
+  line.getCenter(center);
+  const radius = line.distance() / 3;
+  const sphere = new THREE.Sphere(center, radius);
+  world.camera.controls.fitToSphere(sphere, true);
+});
+
+viewport.addEventListener("dblclick", () => lengthMeasurer.create());
+
+window.addEventListener("keydown", (event) => {
+  if (event.code === "Delete" || event.code === "Backspace") {
+    lengthMeasurer.delete();
+  }
+});
+
+// Area Measurement Setup
+const areaMeasurer = components.get(OBF.AreaMeasurement);
+areaMeasurer.world = world;
+areaMeasurer.color = new THREE.Color("#6528d7");
+
+areaMeasurer.list.onItemAdded.add((area) => {
+  if (!area.boundingBox) return;
+  const sphere = new THREE.Sphere();
+  area.boundingBox.getBoundingSphere(sphere);
+  world.camera.controls.fitToSphere(sphere, true);
+});
+
+viewport.addEventListener("dblclick", () => {
+  areaMeasurer.create();
+});
+
+window.addEventListener("keydown", (event) => {
+  if (event.code === "Enter" || event.code === "NumpadEnter") {
+    areaMeasurer.endCreation();
+  }
+});
+
+// Define what happens when a fragments model has been loaded
+fragments.list.onItemSet.add(async ({ value: model }) => {
+  model.useCamera(world.camera.three);
+  model.getClippingPlanesEvent = () => {
+    return Array.from(world.renderer!.three.clippingPlanes) || [];
+  };
+  world.scene.three.add(model.object);
+  await fragments.core.update(true);
+});
+
+// Viewport Layouts
+const [viewportSettings] = BUI.Component.create(viewportSettingsTemplate, {
+  components,
+  world,
+});
+
+viewport.append(viewportSettings);
+
+const [viewportGrid] = BUI.Component.create(TEMPLATES.viewportGridTemplate, {
+  components,
+  world,
+});
+
+viewport.append(viewportGrid);
+
+// Content Grid Setup
+const viewportCardTemplate = () => BUI.html`
+  <div class="dashboard-card" style="padding: 0px;">
+    ${viewport}
+  </div>
+`;
+
+const [contentGrid] = BUI.Component.create<
+  BUI.Grid<TEMPLATES.ContentGridLayouts, TEMPLATES.ContentGridElements>,
+  TEMPLATES.ContentGridState
+>(TEMPLATES.contentGridTemplate, {
+  components,
+  id: CONTENT_GRID_ID,
+  viewportTemplate: viewportCardTemplate,
+});
+
+const setInitialLayout = () => {
+  if (window.location.hash) {
+    const hash = window.location.hash.slice(
+      1,
+    ) as TEMPLATES.ContentGridLayouts[number];
+    if (Object.keys(contentGrid.layouts).includes(hash)) {
+      contentGrid.layout = hash;
+    } else {
+      contentGrid.layout = "Viewer";
+      window.location.hash = "Viewer";
     }
+  } else {
+    window.location.hash = "Viewer";
+    contentGrid.layout = "Viewer";
   }
+};
 
-  world.scene.three.add(model);
+setInitialLayout();
 
-  if (!model.isStreamed) {
-    setTimeout(async () => {
-      world.camera.fit(world.meshes, 0.8);
-    }, 50);
-  }
+contentGrid.addEventListener("layoutchange", () => {
+  window.location.hash = contentGrid.layout as string;
 });
 
-fragments.onFragmentsDisposed.add(({ fragmentIDs }) => {
-  for (const fragmentID of fragmentIDs) {
-    const mesh = [...world.meshes].find((mesh) => mesh.uuid === fragmentID);
-    if (mesh) {
-      world.meshes.delete(mesh);
-    }
-  }
-});
+const contentGridIcons: Record<TEMPLATES.ContentGridLayouts[number], string> = {
+  Viewer: appIcons.MODEL,
+};
 
-const projectInformationPanel = projectInformation(components);
-const elementDataPanel = elementData(components);
+// App Grid Setup
+type AppLayouts = ["App"];
 
-const toolbar = BUI.Component.create(() => {
-  return BUI.html`
-    <bim-tabs floating style="justify-self: center; border-radius: 0.5rem;">
-      <bim-tab label="Import">
-        <bim-toolbar>
-          ${load(components)}
-        </bim-toolbar>
-      </bim-tab>
-      <bim-tab label="Selection">
-        <bim-toolbar>
-          ${camera(world)}
-          ${selection(components, world)}
-        </bim-toolbar>
-      </bim-tab>
-      <bim-tab label="Measurement">
-        <bim-toolbar>
-            ${measurement(world, components)}
-        </bim-toolbar>      
-      </bim-tab>
-    </bim-tabs>
-  `;
-});
+type Sidebar = {
+  name: "sidebar";
+  state: TEMPLATES.GridSidebarState;
+};
 
-const leftPanel = BUI.Component.create(() => {
-  return BUI.html`
-    <bim-tabs switchers-full>
-      <bim-tab name="project" label="Project" icon="ph:building-fill">
-        ${projectInformationPanel}
-      </bim-tab>
-      <bim-tab name="settings" label="Settings" icon="solar:settings-bold">
-        ${settings(components)}
-      </bim-tab>
-      <bim-tab name="help" label="Help" icon="material-symbols:help">
-        ${help}
-      </bim-tab>
-    </bim-tabs> 
-  `;
-});
+type ContentGrid = { name: "contentGrid"; state: TEMPLATES.ContentGridState };
 
-const app = document.getElementById("app") as BUI.Grid;
+type AppGridElements = [Sidebar, ContentGrid];
+
+const app = document.getElementById("app") as BUI.Grid<
+  AppLayouts,
+  AppGridElements
+>;
+
+app.elements = {
+  sidebar: {
+    template: TEMPLATES.gridSidebarTemplate,
+    initialState: {
+      grid: contentGrid,
+      compact: true,
+      layoutIcons: contentGridIcons,
+    },
+  },
+  contentGrid,
+};
+
+contentGrid.addEventListener("layoutchange", () =>
+  app.updateComponent.sidebar(),
+);
+
 app.layouts = {
-  main: {
+  App: {
     template: `
-      "leftPanel viewport" 1fr
-      /26rem 1fr
+      "sidebar contentGrid" 1fr
+      /auto 1fr
     `,
-    elements: {
-      leftPanel,
-      viewport,
-    },
   },
 };
 
-app.layout = "main";
-
-viewportGrid.layouts = {
-  main: {
-    template: `
-      "empty" 1fr
-      "toolbar" auto
-      /1fr
-    `,
-    elements: { toolbar },
-  },
-  second: {
-    template: `
-      "empty elementDataPanel" 1fr
-      "toolbar elementDataPanel" auto
-      /1fr 24rem
-    `,
-    elements: {
-      toolbar,
-      elementDataPanel,
-    },
-  },
-};
-
-viewportGrid.layout = "main";
+app.layout = "App";

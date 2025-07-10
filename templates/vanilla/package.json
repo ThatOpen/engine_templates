@@ -3,12 +3,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@types/three": "0.160.0",
+    "@types/three": "0.175.0",
     "@typescript-eslint/eslint-plugin": "7.2.0",
     "@typescript-eslint/parser": "7.2.0",
     "eslint": "8.57.0",
@@ -21,13 +21,12 @@
     "vite": "5.2.0"
   },
   "dependencies": {
-    "@thatopen/components": "~2.4.2",
-    "@thatopen/components-front": "~2.4.2",
-    "@thatopen/fragments": "~2.4.0",
-    "@thatopen/ui": "~2.4.0",
-    "@thatopen/ui-obc": "~2.4.0",
-    "jszip": "3.10.1",
-    "three": "0.160.1",
-    "web-ifc": "~0.0.66"
+    "@thatopen/components": "~3.1.0",
+    "@thatopen/components-front": "~3.1.0",
+    "@thatopen/fragments": "~3.1.0",
+    "@thatopen/ui": "~3.1.0",
+    "@thatopen/ui-obc": "~3.1.0",
+    "three": "0.175.0",
+    "web-ifc": "0.0.69"
   }
 }
