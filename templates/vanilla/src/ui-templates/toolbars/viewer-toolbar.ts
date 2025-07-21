@@ -154,115 +154,6 @@ export const viewerToolbarTemplate: BUI.StatefullComponent<
     target.loading = false;
   };
 
-  const numberInputId = BUI.Manager.newRandomId();
-  const onMeasure = async ({ target }: { target: BUI.Button }) => {
-    const input = document.getElementById(numberInputId) as BUI.NumberInput;
-    const modelIdMap = highlighter.selection.select;
-    if (!(input && !OBC.ModelIdMapUtils.isEmpty(modelIdMap))) return;
-
-    target.loading = true;
-    const maxDistance = input.value;
-    const measurer = components.get(OBF.LengthMeasurement);
-    measurer.list.clear();
-    const fragments = components.get(OBC.FragmentsManager);
-    for (const [modelId, localIds] of Object.entries(modelIdMap)) {
-      if (localIds.size !== 2) continue;
-      const model = fragments.list.get(modelId);
-      if (!model) continue;
-      const [boxA, boxB] = await model.getBoxes([...localIds]);
-
-      const getClosestPoints = (boxA: THREE.Box3, boxB: THREE.Box3) => {
-        const pointsA = [boxA.min, boxA.max];
-        const pointsB = [boxB.min, boxB.max];
-
-        let minDistance = Infinity;
-        let closestPair: [THREE.Vector3, THREE.Vector3] | null = null;
-
-        for (const pointA of pointsA) {
-          for (const pointB of pointsB) {
-            const distance = pointA.distanceTo(pointB);
-            if (distance < minDistance) {
-              minDistance = distance;
-              closestPair = [pointA, pointB];
-            }
-          }
-        }
-
-        return closestPair;
-      };
-
-      const closestPoints = getClosestPoints(boxA, boxB);
-      if (closestPoints) {
-        const [pointA, pointB] = closestPoints;
-
-        const line = new THREE.Line3(pointA, pointB);
-        const direction = new THREE.Vector3();
-        line.delta(direction);
-        direction.normalize();
-
-        direction.set(
-          Math.abs(direction.x) >= Math.abs(direction.y) &&
-            Math.abs(direction.x) >= Math.abs(direction.z)
-            ? 1
-            : 0,
-          Math.abs(direction.y) >= Math.abs(direction.x) &&
-            Math.abs(direction.y) >= Math.abs(direction.z)
-            ? 1
-            : 0,
-          Math.abs(direction.z) >= Math.abs(direction.x) &&
-            Math.abs(direction.z) >= Math.abs(direction.y)
-            ? 1
-            : 0,
-        );
-
-        const planeA = new THREE.Plane().setFromNormalAndCoplanarPoint(
-          direction,
-          boxA.min,
-        );
-
-        const targetA = new THREE.Vector3();
-        planeA.projectPoint(boxB.min, targetA);
-        const lineA = new THREE.Line3(boxB.min, targetA);
-        const targetB = new THREE.Vector3();
-        planeA.projectPoint(boxB.max, targetB);
-        const lineB = new THREE.Line3(boxB.max, targetB);
-        const closestBoundaryA =
-          lineA.distance() < lineB.distance() ? lineA : lineB;
-
-        const planeB = new THREE.Plane().setFromNormalAndCoplanarPoint(
-          direction,
-          boxA.max,
-        );
-
-        const targetC = new THREE.Vector3();
-        planeB.projectPoint(boxB.min, targetC);
-        const lineC = new THREE.Line3(boxB.min, targetC);
-        const targetD = new THREE.Vector3();
-        planeB.projectPoint(boxB.max, targetD);
-        const lineD = new THREE.Line3(boxB.max, targetD);
-        const closestBoundaryB =
-          lineC.distance() < lineD.distance() ? lineC : lineD;
-
-        const closestBoundary =
-          closestBoundaryA.distance() < closestBoundaryB.distance()
-            ? closestBoundaryA
-            : closestBoundaryB;
-
-        const measurer = components.get(OBF.LengthMeasurement);
-        measurer.color =
-          closestBoundary.distance() > maxDistance
-            ? new THREE.Color("red")
-            : new THREE.Color("green");
-
-        measurer.list.add(
-          new OBF.Line(closestBoundary.start, closestBoundary.end),
-        );
-      }
-    }
-
-    target.loading = false;
-  };
-
   return BUI.html`
     <bim-toolbar>
       <bim-toolbar-section label="Visibility" icon=${appIcons.SHOW}>
@@ -273,14 +164,6 @@ export const viewerToolbarTemplate: BUI.StatefullComponent<
         ${focusBtn}
         <bim-button tooltip-title=${tooltips.HIDE.TITLE} tooltip-text=${tooltips.HIDE.TEXT} icon=${appIcons.HIDE} label="Hide" @click=${onHide}></bim-button> 
         <bim-button tooltip-title=${tooltips.ISOLATE.TITLE} tooltip-text=${tooltips.ISOLATE.TEXT} icon=${appIcons.ISOLATE} label="Isolate" @click=${onIsolate}></bim-button>
-        <bim-button icon=${appIcons.RULER} label="Measure">
-          <bim-context-menu>
-            <div style="display: flex; gap: 0.5rem; width: 15rem;">
-              <bim-number-input value=6 label="Max Distance" suffix="m" id=${numberInputId}></bim-number-input>
-              <bim-button style="flex: 0;" label="Check" @click=${onMeasure}></bim-button>
-            </div>
-          </bim-context-menu>
-        </bim-button>
         <bim-button icon=${appIcons.COLORIZE} label="Colorize">
           <bim-context-menu>
             <div style="display: flex; gap: 0.5rem; width: 10rem;">
