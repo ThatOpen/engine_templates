@@ -106,7 +106,7 @@ world.camera.controls.addEventListener("rest", () => {
 const ifcLoader = components.get(OBC.IfcLoader);
 await ifcLoader.setup({
   autoSetWasm: false,
-  wasm: { absolute: true, path: "https://unpkg.com/web-ifc@0.0.70/" },
+  wasm: { absolute: true, path: "https://unpkg.com/web-ifc@0.0.71/" },
 });
 
 const highlighter = components.get(OBF.Highlighter);
