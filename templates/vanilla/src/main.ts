@@ -106,7 +106,12 @@ world.camera.controls.addEventListener("rest", () => {
 const ifcLoader = components.get(OBC.IfcLoader);
 await ifcLoader.setup({
   autoSetWasm: false,
-  wasm: { absolute: true, path: "https://unpkg.com/web-ifc@0.0.71/" },
+  // The wasm must match the installed web-ifc JS, so its version comes from
+  // the installed package (see vite.config.ts) instead of being hardcoded.
+  wasm: {
+    absolute: true,
+    path: `https://unpkg.com/web-ifc@${__WEB_IFC_VERSION__}/`,
+  },
 });
 
 const highlighter = components.get(OBF.Highlighter);
